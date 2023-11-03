@@ -39,6 +39,8 @@ void Lab3::Init()
     glm::vec3 corner = glm::vec3(0, 0, 0);
     float squareSide = 100;
 
+    tx = 150;
+
     // TODO(student): Compute coordinates of a square's center, and store
     // then in the `cx` and `cy` class variables (see the header). Use
     // `corner` and `squareSide`. These two class variables will be used
@@ -48,6 +50,11 @@ void Lab3::Init()
     float y2 = corner.y + squareSide;
     cx = (corner.x + x2) / 2;
     cy = (corner.y + y2) / 2;
+
+    // center of wheels
+
+    cx2 = (2 * corner.x + squareSide) / 2;
+    cy2 = (2 * corner.y + squareSide) / 2;
 
     // Initialize tx and ty (the translation steps)
     translateX = 0;
@@ -68,6 +75,15 @@ void Lab3::Init()
 
     Mesh* square3 = object2D::CreateSquare("square3", corner, squareSide, glm::vec3(0, 0, 1));
     AddMeshToList(square3);
+
+    Mesh* square_car = object2D::CreateSquare("square_car", corner, squareSide, glm::vec3(0, 0, 1), true);
+    AddMeshToList(square_car);
+
+    Mesh* wheel1 = object2D::CreateSquare("wheel1", corner, squareSide, glm::vec3(0, 0, 1));
+    AddMeshToList(wheel1);
+
+    Mesh* wheel2 = object2D::CreateSquare("wheel2", corner, squareSide, glm::vec3(0, 0, 1));
+    AddMeshToList(wheel2);
 }
 
 
@@ -96,7 +112,7 @@ void Lab3::Update(float deltaTimeSeconds)
     // transform matrix with the matrices you just implemented.
     // Remember, the last matrix in the chain will take effect first!
 
-    angularStep += deltaTimeSeconds;
+    angularStep += 3 * deltaTimeSeconds;
 
     modelMatrix *= transform2D::Translate(cx, cy);
     modelMatrix *= transform2D::Rotate(angularStep);
@@ -135,6 +151,42 @@ void Lab3::Update(float deltaTimeSeconds)
     modelMatrix *= transform2D::Translate(translateX, translateY);
 
     RenderMesh2D(meshes["square3"], shaders["VertexColor"], modelMatrix);
+
+    // TODO BONUS
+
+    if(tx < 1000)
+        tx += deltaTimeSeconds * 100;
+
+    // car
+
+    modelMatrix = glm::mat3(1);
+    modelMatrix *= transform2D::Translate(tx, 600);
+    modelMatrix *= transform2D::Scale(1.3, 1);
+    RenderMesh2D(meshes["square_car"], shaders["VertexColor"], modelMatrix);
+
+    // first wheel
+
+    modelMatrix = glm::mat3(1);
+    modelMatrix *= transform2D::Translate(tx, 550);
+    modelMatrix *= transform2D::Scale(0.3, 0.3);
+
+    modelMatrix *= transform2D::Translate(cx2, cy2);
+    modelMatrix *= transform2D::Rotate(- angularStep);
+    modelMatrix *= transform2D::Translate(-cx2, -cy2);
+
+    RenderMesh2D(meshes["wheel1"], shaders["VertexColor"], modelMatrix);
+
+    // second wheel
+
+    modelMatrix = glm::mat3(1);
+    modelMatrix *= transform2D::Translate(tx + 100, 550);
+    modelMatrix *= transform2D::Scale(0.3, 0.3);
+
+    modelMatrix *= transform2D::Translate(cx2, cy2);
+    modelMatrix *= transform2D::Rotate(- angularStep);
+    modelMatrix *= transform2D::Translate(-cx2, -cy2);
+
+    RenderMesh2D(meshes["wheel2"], shaders["VertexColor"], modelMatrix);
 }
 
 

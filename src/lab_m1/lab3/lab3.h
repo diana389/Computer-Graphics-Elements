@@ -28,8 +28,8 @@ namespace m1
         void OnWindowResize(int width, int height) override;
 
      protected:
-        float cx, cy;
-        glm::mat3 modelMatrix;
+        float cx, cy, tx, cx2, cy2;
+        glm::mat3 modelMatrix, modelMatrix2;
         float translateX, translateY;
         float scaleX, scaleY;
         float angularStep;

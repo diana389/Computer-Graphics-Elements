@@ -49,6 +49,11 @@ void Lab4::Init()
     angularStepOY = 0;
     angularStepOZ = 0;
 
+    // Initialize tx, ty and tz (the translation steps)
+    solar_translateX = 0;
+    solar_translateY = 0;
+    solar_translateZ = 0;
+
     // Sets the resolution of the small viewport
     glm::ivec2 resolution = window->GetResolution();
     miniViewportArea = ViewportArea(50, 50, resolution.x / 5.f, resolution.y / 5.f);
@@ -78,6 +83,26 @@ void Lab4::RenderScene() {
     modelMatrix *= transform3D::RotateOY(angularStepOY);
     modelMatrix *= transform3D::RotateOZ(angularStepOZ);
     RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
+
+    // solar sistem (BONUS)
+
+    modelMatrix = glm::mat4(1);
+    modelMatrix *= transform3D::Translate(5.0f, 2.0f, 1.f);
+    modelMatrix *= transform3D::Scale(0.75f, 0.75f, 0.75f);
+
+    // modelmatrix *= transform3d::translate(solar_translatex, solar_translatey, solar_translatez);
+    RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
+
+    modelMatrix = glm::mat4(1);
+    modelMatrix *= transform3D::Translate(2.5f, 2.f, 1.5f);
+    modelMatrix *= transform3D::Scale(0.25f, 0.25f, 0.25f);
+
+    modelMatrix *= transform3D::Translate(2.5f, 1.f, 0.f);
+    modelMatrix *= transform3D::RotateOY(solar_translateY);
+    modelMatrix *= transform3D::Translate(-2.5f, -1.f, 0.f);
+
+    // modelmatrix *= transform3d::translate(solar_translatex, solar_translatey, solar_translatez);
+    RenderMesh(meshes["box"], shaders["VertexNormal"], modelMatrix);
 }
 
 void Lab4::Update(float deltaTimeSeconds)
@@ -97,7 +122,13 @@ void Lab4::Update(float deltaTimeSeconds)
     glViewport(miniViewportArea.x, miniViewportArea.y, miniViewportArea.width, miniViewportArea.height);
 
     // TODO(student): render the scene again, in the new viewport
+    RenderScene();
     DrawCoordinateSystem();
+
+    // solar sistem
+    solar_translateX += 2 * deltaTimeSeconds;
+    solar_translateY += 2 * deltaTimeSeconds;
+    solar_translateZ += 2 * deltaTimeSeconds;
 }
 
 void Lab4::FrameEnd()
@@ -115,6 +146,48 @@ void Lab4::OnInputUpdate(float deltaTime, int mods)
 {
     // TODO(student): Add transformation logic
 
+    // Translate the object
+    if (window->KeyHold(GLFW_KEY_W))
+		translateZ -= 2 * deltaTime;
+    if (window->KeyHold(GLFW_KEY_S))
+        translateZ += 2 * deltaTime;
+    if (window->KeyHold(GLFW_KEY_A))
+        translateX -= 2 * deltaTime;
+    if (window->KeyHold(GLFW_KEY_D))
+        translateX += 2 * deltaTime;
+    if (window->KeyHold(GLFW_KEY_R))
+        translateY -= 2 * deltaTime;
+    if (window->KeyHold(GLFW_KEY_F))
+        translateY += 2 * deltaTime;
+
+    // Scale the object
+    if (window->KeyHold(GLFW_KEY_1))
+    {
+        scaleX += 2 * deltaTime;
+        scaleY += 2 * deltaTime;
+        scaleZ += 2 * deltaTime;
+    }
+
+    if (window->KeyHold(GLFW_KEY_2))
+    {
+        scaleX -= 2 * deltaTime;
+        scaleY -= 2 * deltaTime;
+        scaleZ -= 2 * deltaTime;
+    }
+
+    // Rotate the object
+    if (window->KeyHold(GLFW_KEY_3))
+		angularStepOX += 2 * deltaTime;
+    if (window->KeyHold(GLFW_KEY_4))
+		angularStepOX -= 2 * deltaTime;
+	if (window->KeyHold(GLFW_KEY_5))
+		angularStepOY += 2 * deltaTime;
+	if (window->KeyHold(GLFW_KEY_6))
+		angularStepOY -= 2 * deltaTime;
+	if (window->KeyHold(GLFW_KEY_7))
+		angularStepOZ += 2 * deltaTime;
+	if (window->KeyHold(GLFW_KEY_8))
+		angularStepOZ -= 2 * deltaTime;
 }
 
 
@@ -136,8 +209,34 @@ void Lab4::OnKeyPress(int key, int mods)
             break;
         }
     }
-    
-    // TODO(student): Add viewport movement and scaling logic
+
+     // TODO(student): Add viewport movement and scaling logic
+    if (key == GLFW_KEY_I)
+    {
+		miniViewportArea.y += 10;
+	}
+    if (key == GLFW_KEY_J)
+    {
+		miniViewportArea.x -= 10;
+	}
+    if (key == GLFW_KEY_K)
+    {
+		miniViewportArea.y -= 10;
+	}
+    if (key == GLFW_KEY_L)
+    {
+		miniViewportArea.x += 10;
+	}
+    if (key == GLFW_KEY_U)
+    {
+		miniViewportArea.width /= 1.2;
+		miniViewportArea.height /= 1.2;
+	}
+    if (key == GLFW_KEY_O)
+    {
+		miniViewportArea.width *= 1.2;
+		miniViewportArea.height *= 1.2;
+	}
 }
 
 
