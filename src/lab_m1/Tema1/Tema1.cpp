@@ -102,27 +102,25 @@ void Tema1::Init()
     AddMeshToList(cannon);
     AddToMap(glm::vec2(700, 200), glm::vec2(100, 100), "white_cannon", true, false, false, cannon);
 
-    Mesh* cannons_to_pick[4];
-
     // orange cannon
-    cannons_to_pick[0] = object2D::CreateCannon("orange_cannon", corner, 100, orange, true);
-    AddMeshToList(cannons_to_pick[0]);
-    AddToMap(glm::vec2(100, 625), glm::vec2(100, 100), "orange_cannon", true, false, false, cannons_to_pick[0]);
+    Mesh* orange_cannon = object2D::CreateCannon("orange_cannon", corner, 100, orange, true);
+    AddMeshToList(orange_cannon);
+    AddToMap(glm::vec2(100, 625), glm::vec2(100, 100), "orange_cannon", true, false, false, orange_cannon);
 
     // blue cannon
-    cannons_to_pick[1] = object2D::CreateCannon("blue_cannon", corner, 100, blue, true);
-    AddMeshToList(cannons_to_pick[1]);
-    AddToMap(glm::vec2(300, 625), glm::vec2(100, 100), "blue_cannon", true, false, false, cannons_to_pick[1]);
+    Mesh* blue_cannon = object2D::CreateCannon("blue_cannon", corner, 100, blue, true);
+    AddMeshToList(blue_cannon);
+    AddToMap(glm::vec2(300, 625), glm::vec2(100, 100), "blue_cannon", true, false, false, blue_cannon);
 
     // yellow cannon
-    cannons_to_pick[2] = object2D::CreateCannon("yellow_cannon", corner, 100, yellow, true);
-    AddMeshToList(cannons_to_pick[2]);
-    AddToMap(glm::vec2(500, 625), glm::vec2(100, 100), "yellow_cannon", true, false, false, cannons_to_pick[2]);
+    Mesh* yellow_cannon = object2D::CreateCannon("yellow_cannon", corner, 100, yellow, true);
+    AddMeshToList(yellow_cannon);
+    AddToMap(glm::vec2(500, 625), glm::vec2(100, 100), "yellow_cannon", true, false, false, yellow_cannon);
 
     // purple cannon
-    cannons_to_pick[3] = object2D::CreateCannon("purple_cannon", corner, 100, purple, true);
-    AddMeshToList(cannons_to_pick[3]);
-    AddToMap(glm::vec2(700, 625), glm::vec2(100, 100), "purple_cannon", true, false, false, cannons_to_pick[3]);
+    Mesh* purple_cannon = object2D::CreateCannon("purple_cannon", corner, 100, purple, true);
+    AddMeshToList(purple_cannon);
+    AddToMap(glm::vec2(700, 625), glm::vec2(100, 100), "purple_cannon", true, false, false, purple_cannon);
 
     // grey stars
     Mesh* star_grey = object2D::CreateStar("star_grey", corner, 40, lightGray, true);
@@ -479,6 +477,51 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 
                 if (!obj.isDraggable)
                     continue;
+
+                if (obj.mesh == meshes["orange_cannon"])
+                {
+                    if (starsCollected < 1)
+                        return;
+                    else
+                    {
+                        gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                    }
+                }
+
+                if (obj.mesh == meshes["blue_cannon"])
+                {
+					if (starsCollected < 2)
+						return;
+                    else
+                    {
+						gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+						gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+					}
+				}
+
+                if (obj.mesh == meshes["yellow_cannon"])
+                {
+                    if(starsCollected < 2)
+						return;
+                    else
+                    {
+						gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+						gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+					}
+                }
+
+                if (obj.mesh == meshes["purple_cannon"])
+                {
+					if(starsCollected < 3)
+                        return;
+                    else
+                    {
+                        gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                        gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                        gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                    }
+                }
+
 
                 AddToMap(obj.center, obj.size, objName + std::to_string(cannonID++), true, false, false, obj.mesh);
 
