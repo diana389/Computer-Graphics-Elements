@@ -65,6 +65,7 @@ namespace m1
         glm::vec3 lightGreen = glm::vec3(124.0 / 255, 234.0 / 255, 156.0 / 255);
         glm::vec3 coolGray = glm::vec3(154.0 / 255, 148.0 / 255, 188.0 / 255);
         glm::vec3 lightGray = glm::vec3(0.5, 0.5, 0.5);
+        glm::vec3 hunyadiYellow = glm::vec3(246.0 / 255, 174.0 / 255, 45.0 / 255);
 
         std::unordered_map<std::string, GameObject> gameObjects;
         GameObject obj;

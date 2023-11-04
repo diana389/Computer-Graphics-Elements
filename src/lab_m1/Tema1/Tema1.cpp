@@ -69,7 +69,7 @@ void Tema1::Init()
         for(int j = 0; j < 3; j++)
         {
             std::string name = "square" + std::to_string(i) + std::to_string(j);
-            cout << name << endl;
+            std::cout << name << endl;
             squares[i][j] = object2D::CreateSquare(name, corner, 100, lightGreen, true);
             AddMeshToList(squares[i][j]);
             AddToMap(glm::vec2(200 + 150 * i, 100 + 150 * j), glm::vec2(100, 100), name, false, true, false, squares[i][j]);
@@ -94,13 +94,14 @@ void Tema1::Init()
 	}
 
     // yellow star
-    Mesh* star = object2D::CreateStar("star", corner, 100, yellow, true);
+    Mesh* star = object2D::CreateStar("star", glm::vec3(0, 0, 5), 75, yellow, true);
     AddMeshToList(star);
     AddToMap(glm::vec2(900, 300), glm::vec2(100, 100), "star", false, false, true, star);
 
-    Mesh* cannon = object2D::CreateCannon("white_cannon", corner, 100, white, true);
-    AddMeshToList(cannon);
-    AddToMap(glm::vec2(700, 200), glm::vec2(100, 100), "white_cannon", true, false, false, cannon);
+    // white cannon
+    // Mesh* cannon = object2D::CreateCannon("white_cannon", corner, 100, white, true);
+    // AddMeshToList(cannon);
+    // AddToMap(glm::vec2(700, 200), glm::vec2(100, 100), "white_cannon", true, false, false, cannon);
 
     // orange cannon
     Mesh* orange_cannon = object2D::CreateCannon("orange_cannon", corner, 100, orange, true);
@@ -123,7 +124,7 @@ void Tema1::Init()
     AddToMap(glm::vec2(700, 625), glm::vec2(100, 100), "purple_cannon", true, false, false, purple_cannon);
 
     // grey stars
-    Mesh* star_grey = object2D::CreateStar("star_grey", corner, 40, lightGray, true);
+    Mesh* star_grey = object2D::CreateStar("star_grey", glm::vec3(0, 0, 0), 40, lightGray, true);
     AddMeshToList(star_grey);
 
     AddToMap(glm::vec2(75, 525), glm::vec2(40, 40), "star_grey00", false, false, false, star_grey);
@@ -141,12 +142,12 @@ void Tema1::Init()
     // purple enemy
     Mesh* enemy = object2D::CreateEnemy("enemy_purple", corner, 50, purple, coolGray, true);
     AddMeshToList(enemy);
-    AddToMap(glm::vec2(1000, 100), glm::vec2(50, 50), "enemy_purple", false, false, false, enemy);
+    // AddToMap(glm::vec2(1000, 100), glm::vec2(50, 50), "enemy_purple", false, false, false, enemy);
 
     // blue enemy
     Mesh* enemy2 = object2D::CreateEnemy("enemy_blue", corner, 50, blue, jordyBlue, true);
     AddMeshToList(enemy2);
-    AddToMap(glm::vec2(1000, 300), glm::vec2(50, 50), "enemy_blue", false, false, false, enemy2);
+    // AddToMap(glm::vec2(1000, 300), glm::vec2(50, 50), "enemy_blue", false, false, false, enemy2);
 
     // yellow enemy
     Mesh* enemy3 = object2D::CreateEnemy("enemy_yellow", corner, 50, yellow, lightGreen, true);
@@ -154,7 +155,7 @@ void Tema1::Init()
     // AddToMap(glm::vec2(1000, 500), glm::vec2(50, 50), "enemy_yellow", false, false, false, enemy3);
 
     // orange enemy
-    Mesh* enemy4 = object2D::CreateEnemy("enemy_orange", corner, 50, orange, raisinBlack, true);
+    Mesh* enemy4 = object2D::CreateEnemy("enemy_orange", corner, 50, orange, hunyadiYellow, true);
     AddMeshToList(enemy4);
     // AddToMap(glm::vec2(1000, 700), glm::vec2(50, 50), "enemy_orange", false, false, false, enemy4);
 }
@@ -336,47 +337,122 @@ bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2
 
 void Tema1::Update(float deltaTimeSeconds)
 {
+    //GameObject &obj = gameObjects["enemy_orange"];
+    //std::cout << "Enemy orange is at " << obj.center.x << ", " << obj.center.y << endl;
+    //if(obj.center.x > 0)
+    //{
+    //    obj.center.x -= 2;
+
+    //    if (obj.center.x < 0)
+    //    {
+    //        gameObjects.erase("heart" + std::to_string(--lives));
+    //        gameObjects.erase("enemy_orange");
+    //        std::cout << "Lives: " << lives << endl;
+    //    }
+    //}
+
+    //obj = gameObjects["enemy_blue"];
+    //if (obj.center.x > 0)
+    //{
+    //    obj.center.x -= 2;
+
+    //    if (obj.center.x < 0)
+    //    {
+    //        gameObjects.erase("heart" + std::to_string(--lives));
+    //        gameObjects.erase("enemy_blue");
+    //        std::cout << "Lives: " << lives << endl;
+    //    }
+    //}
+
+    //obj = gameObjects["enemy_yellow"];
+    //if (obj.center.x > 0)
+    //{
+    //    obj.center.x -= 2;
+
+    //    if (obj.center.x < 0)
+    //    {
+    //        gameObjects.erase("heart" + std::to_string(--lives));
+    //        gameObjects.erase("enemy_yellow");
+    //        std::cout << "Lives: " << lives << endl;
+    //    }
+    //}
+
+    //obj = gameObjects["enemy_purple"];
+    //if (obj.center.x > 0)
+    //{
+    //    obj.center.x -= 2;
+
+    //    if (obj.center.x < 0)
+    //    {
+    //        gameObjects.erase("heart" + std::to_string(--lives));
+    //        gameObjects.erase("enemy_purple");
+    //        std::cout << "Lives: " << lives << endl;
+    //    }
+    //}
+
     //RenderPermanentObjects();
-    for (auto& pair : gameObjects) {
+    std::vector<std::string> objectsToRemove;
+
+    for (auto& pair : gameObjects) 
+    {
         const std::string& objName = pair.first;
         GameObject& obj = pair.second;
+
+        if (objName == "enemy_orange" || objName == "enemy_blue" || objName == "enemy_yellow" || objName == "enemy_purple")
+        {
+			obj.center.x -= 2;
+        }
+
+        if (obj.center.x < 0) {
+            objectsToRemove.push_back(objName);
+            std::cout << "lives: " << lives << std::endl;
+            gameObjects.erase("heart" + std::to_string(--lives));
+        }
 
         modelMatrix = glm::mat3(1);
         modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
 
         if(!obj.isClicked)
 			RenderMesh2D(obj.mesh, shaders["VertexColor"], modelMatrix);
+
     }
+
+    // Remove the objects outside of the loop
+    for (const std::string& objname : objectsToRemove) 
+        gameObjects.erase(objname);
+    
 
     time++;
 
-    if(time % 500)
-		return;
+    if (!(time % 500))
+    {
+        int y = 100 + rand() % 400;
+        int x = 100 + rand() % 1000;
+        AddToMap(glm::vec2(x, y), glm::vec2(100, 100), "star" + std::to_string(starsCount++), false, false, true, meshes["star"]);
+    }
 
-    int y = 100 + rand() % 400;
-    AddToMap(glm::vec2(1200, y), glm::vec2(100, 100), "star" + std::to_string(starsCount++), false, false, true, meshes["star"]);
+    if (!(time % 100))
+    {
+        std::cout << "Time: " << time << endl;
 
-    if (time % 1000)
-        return;
+        // random enemy
+        int color = rand() % 4;
+        int row = rand() % 3;
 
-    cout << "Time: " << time << endl;
-
-    // random enemy
-    int x = rand() % 4;
-
-    switch (x) {
+        switch (color) {
         case 0:
-            AddToMap(glm::vec2(1000, 625), glm::vec2(100, 100), "enemy_orange", false, false, false, meshes["enemy_orange"]);
-			break;
-		case 1:
-            AddToMap(glm::vec2(1000, 625), glm::vec2(100, 100), "enemy_blue", false, false, false, meshes["enemy_blue"]);
-			break;
-		case 2:
-			AddToMap(glm::vec2(1000, 625), glm::vec2(100, 100), "enemy_yellow", false, false, false, meshes["enemy_yellow"]);
-			break;
-		case 3:
-			AddToMap(glm::vec2(1000, 625), glm::vec2(100, 100), "enemy_purple", false, false, false, meshes["enemy_purple"]);
-			break;
+            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_orange", false, false, false, meshes["enemy_orange"]);
+            break;
+        case 1:
+            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_blue", false, false, false, meshes["enemy_blue"]);
+            break;
+        case 2:
+            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_yellow", false, false, false, meshes["enemy_yellow"]);
+            break;
+        case 3:
+            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_purple", false, false, false, meshes["enemy_purple"]);
+            break;
+        }
     }
 }
 
@@ -445,18 +521,18 @@ void Tema1::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 {
     mouseY = window->GetResolution().y - mouseY;
-    cout<< "Mouse clicked at " << mouseX << ", " << mouseY << endl;
+    std::cout<< "Mouse clicked at " << mouseX << ", " << mouseY << endl;
 
     // Add mouse button press event
     if (button == GLFW_MOUSE_BUTTON_RIGHT) {
 
-        cout << "click right" << endl;
+        std::cout << "click right" << endl;
 
         for (auto& pair : gameObjects) {
             const std::string& objName = pair.first;
             GameObject& obj = pair.second;
 
-            // cout << "Object " << objName << " is at " << obj.center.x << ", " << obj.center.y << " with size " << obj.size.x << ", " << obj.size.y << endl;
+            // std::cout << "Object " << objName << " is at " << obj.center.x << ", " << obj.center.y << " with size " << obj.size.x << ", " << obj.size.y << endl;
 
             if (mouseX >= (obj.center.x - obj.size.x / 2.f) && mouseX <= (obj.center.x + obj.size.x / 2.f) && mouseY >= (obj.center.y - obj.size.y / 2.f) && mouseY <= (obj.center.y + obj.size.y / 2.f))
             {
@@ -467,7 +543,7 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                     if(obj.mesh == meshes["star"])
                     {
                         AddToMap(glm::vec2(900 + 50 * starsCollected, 525), glm::vec2(40, 40), "star_grey" + std::to_string(starsCollected++), false, false, false, meshes["star_grey"]);
-                        cout << "Collected " << starsCollected << " stars" << endl;
+                        std::cout << "Collected " << starsCollected << " stars" << endl;
                     }
 
                     gameObjects.erase(objName);
@@ -526,7 +602,7 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                 AddToMap(obj.center, obj.size, objName + std::to_string(cannonID++), true, false, false, obj.mesh);
 
                 obj.isBeingDragged = true;
-                cout << "Object " << objName << " is being dragged" << endl;
+                std::cout << "Object " << objName << " is being dragged" << endl;
 
                 return;
             }
@@ -541,7 +617,7 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 {
     mouseY = window->GetResolution().y - mouseY;
 
-    cout << "Mouse released at " << mouseX << ", " << mouseY << endl;
+    std::cout << "Mouse released at " << mouseX << ", " << mouseY << endl;
 
     // Add mouse button release event
     if (button == GLFW_MOUSE_BUTTON_RIGHT) {
@@ -551,7 +627,7 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 
             if (obj.isBeingDragged) {
                 obj.isBeingDragged = false;
-                cout << "Object " << objName << " is no longer being dragged" << endl;
+                std::cout << "Object " << objName << " is no longer being dragged" << endl;
 
                 bool collision = false;
 
@@ -561,7 +637,7 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 
                     if (objName2 != objName && obj2.canPlaceObject) {
                         if (CheckCollision(obj.center, obj.size, obj2.center, obj2.size)) {
-							cout << "Collision between " << objName << " and " << objName2 << endl;
+							std::cout << "Collision between " << objName << " and " << objName2 << endl;
                             obj.center = obj2.center;
                             obj.isPlaced = true;
                             obj.isDraggable = false;
