@@ -41,6 +41,7 @@ namespace m1
             bool isClickable = false;
             Mesh* mesh;
             glm::vec3 color = glm::vec3(1, 1, 1);
+            int strength;
 
             // Default constructor
             GameObject::GameObject() {
@@ -94,14 +95,13 @@ namespace m1
 
         struct Enemy : GameObject
 		{
-            int strength = 3;
-
 			Enemy::Enemy(glm::vec2 center, glm::vec2 size, Mesh* mesh, glm::vec3 color)
             {
                 this->center = center;
 				this->size = size;
                 this->mesh = mesh;
                 this->color = color;
+                this->strength = 3;
 			}
         };
 

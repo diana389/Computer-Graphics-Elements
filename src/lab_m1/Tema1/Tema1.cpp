@@ -110,7 +110,7 @@ void Tema1::Init()
     }
 
     // LAUNCHED STARS
-    Mesh* snow_star = object2D::CreateStar("snow_star", glm::vec3(0, 0, 4), 40, lightGray, true);
+    Mesh* snow_star = object2D::CreateStar("snow_star", glm::vec3(0, 0, 4), 40, snow, true);
     AddMeshToList(snow_star);
 
     // ENEMIES
@@ -364,11 +364,31 @@ void Tema1::Update(float deltaTimeSeconds)
         if (objName.compare(0, 9, "snow_star") == 0)
         {
 			obj.center.x += 100 * deltaTimeSeconds;
-            angularStep -= 10 * deltaTimeSeconds;
+            angularStep -= 2 * deltaTimeSeconds;
 
             modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
             modelMatrix *= transform2D::Rotate(angularStep);
             modelMatrix *= transform2D::Translate(-obj.center.x, -obj.center.y);
+
+            for (auto& pair2 : gameObjects)
+            {
+				const std::string& objName2 = pair2.first;
+				GameObject& obj2 = pair2.second;
+
+                if (objName2.compare(0, 5, "enemy") == 0)
+                {
+                    if (CheckCollision(obj.center, obj.size, obj2.center, obj2.size))
+                    {
+						objectsToRemove.push_back(objName);
+                        obj2.strength--;
+
+                        if (obj2.strength == 0)
+							objectsToRemove.push_back(objName2);
+
+						break;
+					}
+				}
+			}
 		}
 
         if (obj.center.x < 0 || obj.center.x > 1270) {
@@ -619,50 +639,6 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                 if (!obj.isDraggable)
                     continue;
 
-                if (obj.mesh == meshes["orange_cannon"])
-                {
-                    if (starsCollected < 1)
-                        return;
-                    else
-                    {
-                        gameObjects.erase("star_grey" + std::to_string(--starsCollected));
-                    }
-                }
-
-                if (obj.mesh == meshes["blue_cannon"])
-                {
-					if (starsCollected < 2)
-						return;
-                    else
-                    {
-						gameObjects.erase("star_grey" + std::to_string(--starsCollected));
-						gameObjects.erase("star_grey" + std::to_string(--starsCollected));
-					}
-				}
-
-                if (obj.mesh == meshes["yellow_cannon"])
-                {
-                    if(starsCollected < 2)
-						return;
-                    else
-                    {
-						gameObjects.erase("star_grey" + std::to_string(--starsCollected));
-						gameObjects.erase("star_grey" + std::to_string(--starsCollected));
-					}
-                }
-
-                if (obj.mesh == meshes["purple_cannon"])
-                {
-					if(starsCollected < 3)
-                        return;
-                    else
-                    {
-                        gameObjects.erase("star_grey" + std::to_string(--starsCollected));
-                        gameObjects.erase("star_grey" + std::to_string(--starsCollected));
-                        gameObjects.erase("star_grey" + std::to_string(--starsCollected));
-                    }
-                }
-
 
                 // AddToMap(obj.center, obj.size, objName + std::to_string(cannonID++), obj.mesh);
                 obj = Cannon(obj.center, obj.size, obj.mesh, obj.color);
@@ -718,6 +694,50 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
                                 line2.cannons[objName] = gameObjects[objName];
 
                             printLines();
+
+                            if (obj.mesh == meshes["orange_cannon"])
+                            {
+                                if (starsCollected < 1)
+                                    return;
+                                else
+                                {
+                                    gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                                }
+                            }
+
+                            if (obj.mesh == meshes["blue_cannon"])
+                            {
+                                if (starsCollected < 2)
+                                    return;
+                                else
+                                {
+                                    gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                                    gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                                }
+                            }
+
+                            if (obj.mesh == meshes["yellow_cannon"])
+                            {
+                                if (starsCollected < 2)
+                                    return;
+                                else
+                                {
+                                    gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                                    gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                                }
+                            }
+
+                            if (obj.mesh == meshes["purple_cannon"])
+                            {
+                                if (starsCollected < 3)
+                                    return;
+                                else
+                                {
+                                    gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                                    gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                                    gameObjects.erase("star_grey" + std::to_string(--starsCollected));
+                                }
+                            }
 
                             break;
 						}
