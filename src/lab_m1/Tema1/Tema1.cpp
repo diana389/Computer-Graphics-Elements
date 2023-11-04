@@ -10,12 +10,6 @@ using namespace std;
 using namespace m1;
 
 
-/*
- *  To find out more about `FrameStart`, `Update`, `FrameEnd`
- *  and the order in which they are called, see `world.cpp`.
- */
-
-
 Tema1::Tema1()
 {
 }
@@ -36,6 +30,7 @@ void Tema1::Init()
     camera->Update();
     GetCameraInput()->SetActive(false);
 
+    // initialize variables
     glm::vec3 corner = glm::vec3(0, 0, 0);
     lives = 3;
     starsCount = 0;
@@ -43,121 +38,79 @@ void Tema1::Init()
     time = 0;
     cannonID = 0;
 
-    // TODO(student): Compute coordinates of a square's center, and store
-    // then in the `cx` and `cy` class variables (see the header). Use
-    // `corner` and `squareSide`. These two class variables will be used
-    // in the `Update()` function. Think about it, why do you need them?
-
-    // Initialize tx and ty (the translation steps)
-    translateX = 0;
-    translateY = 0;
-
-    // Initialize sx and sy (the scale factors)
-    scaleX = 1;
-    scaleY = 1;
-
-    // Initialize angularStep
-    angularStep = 0;
-
+    // RECTANGLE
     Mesh* rect = object2D::CreateRectangle("rect", corner, 100, 400, jordyBlue, true);
     AddMeshToList(rect);
-    AddToMap(glm::vec2(75, 250), glm::vec2(100, 400), "rect", false, false, false, rect);
 
-    Mesh* squares[3][3];
-
+    // GREEN SQUARES
+    Mesh* square = object2D::CreateSquare("square", corner, 100, lightGreen, true);
     for(int i = 0; i < 3; i++)
         for(int j = 0; j < 3; j++)
         {
             std::string name = "square" + std::to_string(i) + std::to_string(j);
-            std::cout << name << endl;
-            squares[i][j] = object2D::CreateSquare(name, corner, 100, lightGreen, true);
-            AddMeshToList(squares[i][j]);
-            AddToMap(glm::vec2(200 + 150 * i, 100 + 150 * j), glm::vec2(100, 100), name, false, true, false, squares[i][j]);
+            AddMeshToList(square);
+            AddToMap(glm::vec2(200 + 150 * i, 100 + 150 * j), glm::vec2(100, 100), name, square);
         }
 
-    Mesh* hearts[3];
+    // RED HEARTS
+    Mesh* heart = object2D::CreateHeart("heart", corner, 3, red, true);
     for (int i = 0; i < lives; i++)
     {
         std::string name = "heart" + std::to_string(i);
-		hearts[i] = object2D::CreateHeart(name, corner, 3, red, true);
-		AddMeshToList(hearts[i]);
-        AddToMap(glm::vec2(950 + 125 * i, 650), glm::vec2(100, 100), name, false, false, false, hearts[i]);
+		AddMeshToList(heart);
+        AddToMap(glm::vec2(950 + 125 * i, 650), glm::vec2(100, 100), name, heart);
 	}
 
-    Mesh* cannon_outline[4];
-    for (int i = 0; i < 4; i++)
-    {
-        std::string name = "cannon" + std::to_string(i);
-		cannon_outline[i] = object2D::CreateSquare(name, corner, 150, white, false);
-		AddMeshToList(cannon_outline[i]);
-		AddToMap(glm::vec2(125 + 200 * i, 625), glm::vec2(150, 150), name, false, false, false, cannon_outline[i]);
-	}
+    // CANNON OUTLINE
+    Mesh* cannon_outline = object2D::CreateSquare("cannon_outline", corner, 150, white, false);
+	AddMeshToList(cannon_outline);
 
-    // yellow star
-    Mesh* star = object2D::CreateStar("star", glm::vec3(0, 0, 5), 75, yellow, true);
+    // PINK STAR
+    Mesh* star = object2D::CreateStar("star", glm::vec3(0, 0, 5), 60, lavanderPink, true);
     AddMeshToList(star);
-    AddToMap(glm::vec2(900, 300), glm::vec2(100, 100), "star", false, false, true, star);
+    AddToMap(glm::vec2(900, 300), glm::vec2(100, 100), "star", star);
 
-    // white cannon
-    // Mesh* cannon = object2D::CreateCannon("white_cannon", corner, 100, white, true);
-    // AddMeshToList(cannon);
-    // AddToMap(glm::vec2(700, 200), glm::vec2(100, 100), "white_cannon", true, false, false, cannon);
-
+    // CANNONS TO PICK
     // orange cannon
     Mesh* orange_cannon = object2D::CreateCannon("orange_cannon", corner, 100, orange, true);
     AddMeshToList(orange_cannon);
-    AddToMap(glm::vec2(100, 625), glm::vec2(100, 100), "orange_cannon", true, false, false, orange_cannon);
+    AddToMap(glm::vec2(100, 625), glm::vec2(100, 100), "orange_cannon", orange_cannon);
 
     // blue cannon
     Mesh* blue_cannon = object2D::CreateCannon("blue_cannon", corner, 100, blue, true);
     AddMeshToList(blue_cannon);
-    AddToMap(glm::vec2(300, 625), glm::vec2(100, 100), "blue_cannon", true, false, false, blue_cannon);
+    AddToMap(glm::vec2(300, 625), glm::vec2(100, 100), "blue_cannon", blue_cannon);
 
     // yellow cannon
     Mesh* yellow_cannon = object2D::CreateCannon("yellow_cannon", corner, 100, yellow, true);
     AddMeshToList(yellow_cannon);
-    AddToMap(glm::vec2(500, 625), glm::vec2(100, 100), "yellow_cannon", true, false, false, yellow_cannon);
+    AddToMap(glm::vec2(500, 625), glm::vec2(100, 100), "yellow_cannon", yellow_cannon);
 
     // purple cannon
     Mesh* purple_cannon = object2D::CreateCannon("purple_cannon", corner, 100, purple, true);
     AddMeshToList(purple_cannon);
-    AddToMap(glm::vec2(700, 625), glm::vec2(100, 100), "purple_cannon", true, false, false, purple_cannon);
+    AddToMap(glm::vec2(700, 625), glm::vec2(100, 100), "purple_cannon", purple_cannon);
 
     // grey stars
     Mesh* star_grey = object2D::CreateStar("star_grey", glm::vec3(0, 0, 0), 40, lightGray, true);
     AddMeshToList(star_grey);
 
-    AddToMap(glm::vec2(75, 525), glm::vec2(40, 40), "star_grey00", false, false, false, star_grey);
-    AddToMap(glm::vec2(275, 525), glm::vec2(40, 40), "star_grey01", false, false, false, star_grey);
-    AddToMap(glm::vec2(325, 525), glm::vec2(40, 40), "star_grey02", false, false, false, star_grey);
-    AddToMap(glm::vec2(475, 525), glm::vec2(40, 40), "star_grey03", false, false, false, star_grey);
-    AddToMap(glm::vec2(525, 525), glm::vec2(40, 40), "star_grey04", false, false, false, star_grey);
-    AddToMap(glm::vec2(675, 525), glm::vec2(40, 40), "star_grey05", false, false, false, star_grey);
-    AddToMap(glm::vec2(725, 525), glm::vec2(40, 40), "star_grey06", false, false, false, star_grey);
-    AddToMap(glm::vec2(775, 525), glm::vec2(40, 40), "star_grey07", false, false, false, star_grey);
-
-
-    // enemys
-
+    // ENEMIES
     // purple enemy
     Mesh* enemy = object2D::CreateEnemy("enemy_purple", corner, 50, purple, coolGray, true);
     AddMeshToList(enemy);
-    // AddToMap(glm::vec2(1000, 100), glm::vec2(50, 50), "enemy_purple", false, false, false, enemy);
 
     // blue enemy
     Mesh* enemy2 = object2D::CreateEnemy("enemy_blue", corner, 50, blue, jordyBlue, true);
     AddMeshToList(enemy2);
-    // AddToMap(glm::vec2(1000, 300), glm::vec2(50, 50), "enemy_blue", false, false, false, enemy2);
 
     // yellow enemy
     Mesh* enemy3 = object2D::CreateEnemy("enemy_yellow", corner, 50, yellow, lightGreen, true);
     AddMeshToList(enemy3);
-    // AddToMap(glm::vec2(1000, 500), glm::vec2(50, 50), "enemy_yellow", false, false, false, enemy3);
 
     // orange enemy
     Mesh* enemy4 = object2D::CreateEnemy("enemy_orange", corner, 50, orange, hunyadiYellow, true);
     AddMeshToList(enemy4);
-    // AddToMap(glm::vec2(1000, 700), glm::vec2(50, 50), "enemy_orange", false, false, false, enemy4);
 }
 
 
@@ -170,149 +123,188 @@ void Tema1::FrameStart()
     glm::ivec2 resolution = window->GetResolution();
     // Sets the screen area where to draw
     glViewport(0, 0, resolution.x, resolution.y);
-}
 
-void Tema1::RenderPermanentObjects()
-{
-    // rectangle
+    // render permanent objects
+
+    // RECTANGLE
     modelMatrix = glm::mat3(1);
     modelMatrix *= transform2D::Translate(75, 250);
 
-    modelMatrix *= transform2D::Scale(1, 4);
     RenderMesh2D(meshes["rect"], shaders["VertexColor"], modelMatrix);
 
-    // green squares
-    for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 3; j++)
-        {
-            std::string name = "square" + std::to_string(i) + std::to_string(j);
-            obj = gameObjects[name];
-
-            modelMatrix = glm::mat3(1);
-            modelMatrix *= transform2D::Translate(obj.center.x,obj.center.y);
-
-            RenderMesh2D(meshes[name], shaders["VertexColor"], modelMatrix);
-        }
-
-    // cannon outline
+    // CANNON OUTLINE
     for (int i = 0; i < 4; i++)
-    {
+	    {
+		    modelMatrix = glm::mat3(1);
+		    modelMatrix *= transform2D::Translate(125 + 200 * i, 625);
+
+		    RenderMesh2D(meshes["cannon_outline"], shaders["VertexColor"], modelMatrix);
+	    }
+
+    // GREY STARS
+    // array of positions for the grey stars
+    glm::vec2 starPositions[] = {
+        glm::vec2(75, 525),
+        glm::vec2(275, 525),
+        glm::vec2(325, 525),
+        glm::vec2(475, 525),
+        glm::vec2(525, 525),
+        glm::vec2(675, 525),
+        glm::vec2(725, 525),
+        glm::vec2(775, 525)
+    };
+
+    // render grey stars
+    for (int i = 0; i < 8; i++) {
         modelMatrix = glm::mat3(1);
-        modelMatrix *= transform2D::Translate(125 + 200 * i, 625);
+        modelMatrix *= transform2D::Translate(starPositions[i].x, starPositions[i].y);
 
-        RenderMesh2D(meshes["cannon_outline"], shaders["VertexColor"], modelMatrix);
+		RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
     }
-
-    // yellow star
-    obj = gameObjects["star"];
-
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
-
-    if(!obj.isClicked)
-		RenderMesh2D(obj.mesh, shaders["VertexColor"], modelMatrix);
-
-    // cannons_to_pick
-    // orange cannon
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(100, 625);
-
-    RenderMesh2D(meshes["orange_cannon"], shaders["VertexColor"], modelMatrix);
-
-    // blue cannon
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(300, 625);
-
-    RenderMesh2D(meshes["blue_cannon"], shaders["VertexColor"], modelMatrix);
-
-    // yellow cannon
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(500, 625);
-
-    RenderMesh2D(meshes["yellow_cannon"], shaders["VertexColor"], modelMatrix);
-
-
-    // purple cannon
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(700, 625);
-
-    RenderMesh2D(meshes["purple_cannon"], shaders["VertexColor"], modelMatrix);
-
-    // grey stars
-
-    // orange cannon
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(75, 525);
-
-    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
-
-    // blue cannon
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(275, 525);
-
-    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
-
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(325, 525);
-
-    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
-
-    // yellow cannon
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(475, 525);
-
-    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
-
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(525, 525);
-
-    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
-
-    // purple cannon
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(675, 525);
-
-    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
-
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(725, 525);
-
-    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
-
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(775, 525);
-
-    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
-
-    // red hearts
-    for (int i = 0; i < lives; i++)
-    {
-        modelMatrix = glm::mat3(1);
-        modelMatrix *= transform2D::Translate(950 + 125 * i, 650);
-
-        RenderMesh2D(meshes["heart"], shaders["VertexColor"], modelMatrix);
-    }
-
-    // enemy
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(1000, 100);
-
-    RenderMesh2D(meshes["enemy_purple"], shaders["VertexColor"], modelMatrix);
-
-    // enemy2
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(1000, 300);
-
-    RenderMesh2D(meshes["enemy_blue"], shaders["VertexColor"], modelMatrix);
-
-    // cannon
-    obj = gameObjects["cannon"];
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
-
-    if (!obj.isClicked)
-        RenderMesh2D(obj.mesh, shaders["VertexColor"], modelMatrix);
 }
+
+//void Tema1::RenderPermanentObjects()
+//{
+//    GameObject obj;
+//
+//    // rectangle
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(75, 250);
+//
+//    modelMatrix *= transform2D::Scale(1, 4);
+//    RenderMesh2D(meshes["rect"], shaders["VertexColor"], modelMatrix);
+//
+//    // green squares
+//    for (int i = 0; i < 3; i++)
+//        for (int j = 0; j < 3; j++)
+//        {
+//            std::string name = "square" + std::to_string(i) + std::to_string(j);
+//            obj = gameObjects[name];
+//
+//            modelMatrix = glm::mat3(1);
+//            modelMatrix *= transform2D::Translate(obj.center.x,obj.center.y);
+//
+//            RenderMesh2D(meshes[name], shaders["VertexColor"], modelMatrix);
+//        }
+//
+//    // cannon outline
+//    for (int i = 0; i < 4; i++)
+//    {
+//        modelMatrix = glm::mat3(1);
+//        modelMatrix *= transform2D::Translate(125 + 200 * i, 625);
+//
+//        RenderMesh2D(meshes["cannon_outline"], shaders["VertexColor"], modelMatrix);
+//    }
+//
+//    // yellow star
+//    obj = gameObjects["star"];
+//
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
+//
+//    if(!obj.isClicked)
+//		RenderMesh2D(obj.mesh, shaders["VertexColor"], modelMatrix);
+//
+//    // cannons_to_pick
+//    // orange cannon
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(100, 625);
+//
+//    RenderMesh2D(meshes["orange_cannon"], shaders["VertexColor"], modelMatrix);
+//
+//    // blue cannon
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(300, 625);
+//
+//    RenderMesh2D(meshes["blue_cannon"], shaders["VertexColor"], modelMatrix);
+//
+//    // yellow cannon
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(500, 625);
+//
+//    RenderMesh2D(meshes["yellow_cannon"], shaders["VertexColor"], modelMatrix);
+//
+//
+//    // purple cannon
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(700, 625);
+//
+//    RenderMesh2D(meshes["purple_cannon"], shaders["VertexColor"], modelMatrix);
+//
+//    // grey stars
+//
+//    // orange cannon
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(75, 525);
+//
+//    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
+//
+//    // blue cannon
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(275, 525);
+//
+//    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
+//
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(325, 525);
+//
+//    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
+//
+//    // yellow cannon
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(475, 525);
+//
+//    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
+//
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(525, 525);
+//
+//    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
+//
+//    // purple cannon
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(675, 525);
+//
+//    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
+//
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(725, 525);
+//
+//    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
+//
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(775, 525);
+//
+//    RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
+//    // red hearts
+//    for (int i = 0; i < lives; i++)
+//    {
+//        modelMatrix = glm::mat3(1);
+//        modelMatrix *= transform2D::Translate(950 + 125 * i, 650);
+//
+//        RenderMesh2D(meshes["heart"], shaders["VertexColor"], modelMatrix);
+//    }
+//
+//    // enemy
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(1000, 100);
+//
+//    RenderMesh2D(meshes["enemy_purple"], shaders["VertexColor"], modelMatrix);
+//
+//    // enemy2
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(1000, 300);
+//
+//    RenderMesh2D(meshes["enemy_blue"], shaders["VertexColor"], modelMatrix);
+//
+//    // cannon
+//    obj = gameObjects["cannon"];
+//    modelMatrix = glm::mat3(1);
+//    modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
+//
+//    if (!obj.isClicked)
+//        RenderMesh2D(obj.mesh, shaders["VertexColor"], modelMatrix);
+//}
 
 bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2, glm::vec2 size2)
 {
@@ -337,60 +329,6 @@ bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2
 
 void Tema1::Update(float deltaTimeSeconds)
 {
-    //GameObject &obj = gameObjects["enemy_orange"];
-    //std::cout << "Enemy orange is at " << obj.center.x << ", " << obj.center.y << endl;
-    //if(obj.center.x > 0)
-    //{
-    //    obj.center.x -= 2;
-
-    //    if (obj.center.x < 0)
-    //    {
-    //        gameObjects.erase("heart" + std::to_string(--lives));
-    //        gameObjects.erase("enemy_orange");
-    //        std::cout << "Lives: " << lives << endl;
-    //    }
-    //}
-
-    //obj = gameObjects["enemy_blue"];
-    //if (obj.center.x > 0)
-    //{
-    //    obj.center.x -= 2;
-
-    //    if (obj.center.x < 0)
-    //    {
-    //        gameObjects.erase("heart" + std::to_string(--lives));
-    //        gameObjects.erase("enemy_blue");
-    //        std::cout << "Lives: " << lives << endl;
-    //    }
-    //}
-
-    //obj = gameObjects["enemy_yellow"];
-    //if (obj.center.x > 0)
-    //{
-    //    obj.center.x -= 2;
-
-    //    if (obj.center.x < 0)
-    //    {
-    //        gameObjects.erase("heart" + std::to_string(--lives));
-    //        gameObjects.erase("enemy_yellow");
-    //        std::cout << "Lives: " << lives << endl;
-    //    }
-    //}
-
-    //obj = gameObjects["enemy_purple"];
-    //if (obj.center.x > 0)
-    //{
-    //    obj.center.x -= 2;
-
-    //    if (obj.center.x < 0)
-    //    {
-    //        gameObjects.erase("heart" + std::to_string(--lives));
-    //        gameObjects.erase("enemy_purple");
-    //        std::cout << "Lives: " << lives << endl;
-    //    }
-    //}
-
-    //RenderPermanentObjects();
     std::vector<std::string> objectsToRemove;
 
     for (auto& pair : gameObjects) 
@@ -412,8 +350,7 @@ void Tema1::Update(float deltaTimeSeconds)
         modelMatrix = glm::mat3(1);
         modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
 
-        if(!obj.isClicked)
-			RenderMesh2D(obj.mesh, shaders["VertexColor"], modelMatrix);
+		RenderMesh2D(obj.mesh, shaders["VertexColor"], modelMatrix);
 
     }
 
@@ -428,10 +365,10 @@ void Tema1::Update(float deltaTimeSeconds)
     {
         int y = 100 + rand() % 400;
         int x = 100 + rand() % 1000;
-        AddToMap(glm::vec2(x, y), glm::vec2(100, 100), "star" + std::to_string(starsCount++), false, false, true, meshes["star"]);
+        AddToMap(glm::vec2(x, y), glm::vec2(100, 100), "star" + std::to_string(starsCount++), meshes["star"]);
     }
 
-    if (!(time % 100))
+    if (!(time % 400))
     {
         std::cout << "Time: " << time << endl;
 
@@ -441,32 +378,46 @@ void Tema1::Update(float deltaTimeSeconds)
 
         switch (color) {
         case 0:
-            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_orange", false, false, false, meshes["enemy_orange"]);
+            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_orange", meshes["enemy_orange"]);
             break;
         case 1:
-            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_blue", false, false, false, meshes["enemy_blue"]);
+            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_blue", meshes["enemy_blue"]);
             break;
         case 2:
-            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_yellow", false, false, false, meshes["enemy_yellow"]);
+            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_yellow", meshes["enemy_yellow"]);
             break;
         case 3:
-            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_purple", false, false, false, meshes["enemy_purple"]);
+            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_purple", meshes["enemy_purple"]);
             break;
         }
     }
 }
 
-void Tema1::AddToMap(glm::vec2 center, glm::vec2 size,const std::string& name, bool isDraggable, bool canPlaceObject, bool isClickable, Mesh* mesh)
+void Tema1::AddToMap(glm::vec2 center, glm::vec2 size,const std::string& name, Mesh* mesh)
 {
+    if (mesh == nullptr)
+        throw std::runtime_error("Mesh is null");
+
     GameObject obj;
-    obj.center = center;
-    obj.size = size;
-    obj.isBeingDragged = false;
-    obj.isDraggable = isDraggable;
-    obj.canPlaceObject = canPlaceObject;
-    obj.isClicked = false;
-    obj.isClickable = isClickable;
-    obj.mesh = mesh;
+
+    if(mesh == meshes["orange_cannon"] || mesh == meshes["blue_cannon"] || mesh == meshes["yellow_cannon"] || mesh == meshes["purple_cannon"])
+        obj = Cannon(center, size, mesh);
+    
+    if (mesh == meshes["star"])
+        obj = Star(center, size, mesh);
+
+    if (mesh == meshes["enemy_orange"] || mesh == meshes["enemy_blue"] || mesh == meshes["enemy_yellow"] || mesh == meshes["enemy_purple"])
+		obj = Enemy(center, size, mesh);
+
+    if(mesh == meshes["square"])
+		obj = Square(center, size, mesh);
+
+    if(mesh == meshes["heart"])
+		obj = GameObject(center, size, mesh);
+
+    if(mesh == meshes["star_grey"])
+        obj = GameObject(center, size, mesh);
+
     gameObjects[name] = obj;
 }
 
@@ -542,7 +493,7 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 
                     if(obj.mesh == meshes["star"])
                     {
-                        AddToMap(glm::vec2(900 + 50 * starsCollected, 525), glm::vec2(40, 40), "star_grey" + std::to_string(starsCollected++), false, false, false, meshes["star_grey"]);
+                        AddToMap(glm::vec2(900 + 50 * starsCollected, 525), glm::vec2(40, 40), "star_grey" + std::to_string(starsCollected++), meshes["star_grey"]);
                         std::cout << "Collected " << starsCollected << " stars" << endl;
                     }
 
@@ -599,7 +550,7 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                 }
 
 
-                AddToMap(obj.center, obj.size, objName + std::to_string(cannonID++), true, false, false, obj.mesh);
+                AddToMap(obj.center, obj.size, objName + std::to_string(cannonID++), obj.mesh);
 
                 obj.isBeingDragged = true;
                 std::cout << "Object " << objName << " is being dragged" << endl;
@@ -639,7 +590,6 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
                         if (CheckCollision(obj.center, obj.size, obj2.center, obj2.size)) {
 							std::cout << "Collision between " << objName << " and " << objName2 << endl;
                             obj.center = obj2.center;
-                            obj.isPlaced = true;
                             obj.isDraggable = false;
                             obj.isClickable = true;
                             collision = true;

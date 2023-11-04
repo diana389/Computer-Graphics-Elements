@@ -2,7 +2,6 @@
 
 #include "components/simple_scene.h"
 
-
 namespace m1
 {
     class Tema1 : public gfxc::SimpleScene
@@ -26,23 +25,81 @@ namespace m1
         void OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) override;
         void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
         void OnWindowResize(int width, int height) override;
-        void Tema1::RenderPermanentObjects();
+        // void Tema1::RenderPermanentObjects();
         bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2, glm::vec2 size2);
-        void Tema1::AddToMap(glm::vec2 center, glm::vec2 size, const std::string& name, bool isDraggable, bool canPlaceObject, bool isClickable, Mesh* mesh);
+        void Tema1::AddToMap(glm::vec2 center, glm::vec2 size, const std::string& name, Mesh* mesh);
 
     protected:
 
         struct GameObject {
             glm::vec2 center;
             glm::vec2 size;
-            bool isBeingDragged;
-            bool isDraggable;
-            bool canPlaceObject;
-            bool isClicked; // fara
-            bool isClickable;
-            bool isPlaced; // fara
+            bool isBeingDragged = false;
+            bool isDraggable = false;
+            bool canPlaceObject = false;
+            bool isClickable = false;
             Mesh* mesh;
+
+            // Default constructor
+            GameObject::GameObject() {
+                this->center = glm::vec2(0, 0);
+                this->size = glm::vec2(1, 1);
+                this->mesh = NULL;
+            }
+
+            // Constructor to initialize the class members
+            GameObject::GameObject(glm::vec2 center, glm::vec2 size, Mesh* mesh) {
+                this->center = center;
+                this->size = size;
+                this->mesh = mesh;
+            }
         };
+
+        // derived class
+        struct Cannon : GameObject
+        {
+            Cannon::Cannon(glm::vec2 center, glm::vec2 size, Mesh* mesh)
+            {
+				this->center = center;
+				this->size = size;
+				this->mesh = mesh;
+                this->isDraggable = true;
+            }
+        };
+
+        struct Star : GameObject
+		{
+			Star::Star(glm::vec2 center, glm::vec2 size, Mesh* mesh)
+			{
+				this->center = center;
+				this->size = size;
+				this->mesh = mesh;
+                this->isClickable = true;
+			}
+		};
+
+        struct Square : GameObject
+        {
+            Square::Square(glm::vec2 center, glm::vec2 size, Mesh* mesh)
+			{
+				this->center = center;
+				this->size = size;
+				this->mesh = mesh;
+                this->canPlaceObject = true;
+			}
+        };
+
+        struct Enemy : GameObject
+		{
+			Enemy::Enemy(glm::vec2 center, glm::vec2 size, Mesh* mesh)
+            {
+                this->center = center;
+				this->size = size;
+                this->mesh = mesh;
+			}
+        };
+
+        std::unordered_map<std::string, GameObject> gameObjects;
 
         glm::mat3 modelMatrix;
         float translateX, translateY;
@@ -53,6 +110,7 @@ namespace m1
         int time;
         int cannonID;
 
+        // colors
         glm::vec3 red = glm::vec3(1, 0, 0);
         glm::vec3 green = glm::vec3(0, 1, 0);
         glm::vec3 blue = glm::vec3(0, 0, 1);
@@ -66,8 +124,6 @@ namespace m1
         glm::vec3 coolGray = glm::vec3(154.0 / 255, 148.0 / 255, 188.0 / 255);
         glm::vec3 lightGray = glm::vec3(0.5, 0.5, 0.5);
         glm::vec3 hunyadiYellow = glm::vec3(246.0 / 255, 174.0 / 255, 45.0 / 255);
-
-        std::unordered_map<std::string, GameObject> gameObjects;
-        GameObject obj;
+        glm::vec3 lavanderPink = glm::vec3(226.0 / 255, 163.0 / 255, 199.0 / 255);
     };
-}   // namespace m1
+}

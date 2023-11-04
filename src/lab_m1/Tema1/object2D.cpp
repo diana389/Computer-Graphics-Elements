@@ -217,7 +217,7 @@ Mesh* object2D::CreateEnemy(
 
     for (int i = 0; i < 6; i++) {
         float angle = glm::radians(60.0f * i);
-        glm::vec3 vertexPosition = center + glm::vec3(size * cos(angle), size * sin(angle), 1);
+        glm::vec3 vertexPosition = center + glm::vec3(size * cos(angle), size * sin(angle), 2);
         vertices.emplace_back(vertexPosition, outerColor);
         indices.push_back(i);
     }
@@ -245,7 +245,7 @@ Mesh* object2D::CreateEnemy(
 
     for (int i = 0; i < 6; i++) {
         float angle = glm::radians(60.0f * i);
-        glm::vec3 vertexPosition = center + glm::vec3((0.75f * size) * cos(angle), (0.75f * size) * sin(angle), 2);
+        glm::vec3 vertexPosition = center + glm::vec3((0.75f * size) * cos(angle), (0.75f * size) * sin(angle), 3);
         vertices.emplace_back(vertexPosition, innerColor);
         indices.push_back(i);
     }
