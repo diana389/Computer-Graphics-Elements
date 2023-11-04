@@ -32,11 +32,6 @@ void Tema1::Init()
 
     // initialize variables
     glm::vec3 corner = glm::vec3(0, 0, 0);
-    lives = 3;
-    starsCount = 0;
-    starsCollected = 0;
-    time = 0;
-    cannonID = 0;
 
     // RECTANGLE
     Mesh* rect = object2D::CreateRectangle("rect", corner, 100, 400, jordyBlue, true);
@@ -47,9 +42,11 @@ void Tema1::Init()
     for(int i = 0; i < 3; i++)
         for(int j = 0; j < 3; j++)
         {
-            std::string name = "square" + std::to_string(i) + std::to_string(j);
+            std::string name = "square" + std::to_string(j) + std::to_string(i);
             AddMeshToList(square);
-            AddToMap(glm::vec2(200 + 150 * i, 100 + 150 * j), glm::vec2(100, 100), name, square);
+            obj = Square(glm::vec2(200 + 150 * i, 100 + 150 * j), glm::vec2(100, 100), square);
+            gameObjects[name] = obj;
+            // AddToMap(glm::vec2(200 + 150 * i, 100 + 150 * j), glm::vec2(100, 100), name, square);
         }
 
     // RED HEARTS
@@ -58,7 +55,9 @@ void Tema1::Init()
     {
         std::string name = "heart" + std::to_string(i);
 		AddMeshToList(heart);
-        AddToMap(glm::vec2(950 + 125 * i, 650), glm::vec2(100, 100), name, heart);
+        obj = GameObject(glm::vec2(950 + 125 * i, 650), glm::vec2(100, 100), heart);
+        gameObjects[name] = obj;
+        // AddToMap(glm::vec2(950 + 125 * i, 650), glm::vec2(100, 100), name, heart);
 	}
 
     // CANNON OUTLINE
@@ -68,49 +67,68 @@ void Tema1::Init()
     // PINK STAR
     Mesh* star = object2D::CreateStar("star", glm::vec3(0, 0, 5), 60, lavanderPink, true);
     AddMeshToList(star);
-    AddToMap(glm::vec2(900, 300), glm::vec2(100, 100), "star", star);
+    obj = Star(glm::vec2(900, 300), glm::vec2(100, 100), star);
+    gameObjects["star"] = obj;
+    // AddToMap(glm::vec2(900, 300), glm::vec2(100, 100), "star", star);
 
     // CANNONS TO PICK
     // orange cannon
     Mesh* orange_cannon = object2D::CreateCannon("orange_cannon", corner, 100, orange, true);
     AddMeshToList(orange_cannon);
-    AddToMap(glm::vec2(100, 625), glm::vec2(100, 100), "orange_cannon", orange_cannon);
+    obj = Cannon(glm::vec2(100, 625), glm::vec2(100, 100), orange_cannon, orange);
+    gameObjects["orange_cannon"] = obj;
+    // AddToMap(glm::vec2(100, 625), glm::vec2(100, 100), "orange_cannon", orange_cannon);
 
     // blue cannon
     Mesh* blue_cannon = object2D::CreateCannon("blue_cannon", corner, 100, blue, true);
     AddMeshToList(blue_cannon);
-    AddToMap(glm::vec2(300, 625), glm::vec2(100, 100), "blue_cannon", blue_cannon);
+    obj = Cannon(glm::vec2(300, 625), glm::vec2(100, 100), blue_cannon, blue);
+    gameObjects["blue_cannon"] = obj;
+    // AddToMap(glm::vec2(300, 625), glm::vec2(100, 100), "blue_cannon", blue_cannon);
 
     // yellow cannon
     Mesh* yellow_cannon = object2D::CreateCannon("yellow_cannon", corner, 100, yellow, true);
     AddMeshToList(yellow_cannon);
-    AddToMap(glm::vec2(500, 625), glm::vec2(100, 100), "yellow_cannon", yellow_cannon);
+    obj = Cannon(glm::vec2(500, 625), glm::vec2(100, 100), yellow_cannon, yellow);
+    gameObjects["yellow_cannon"] = obj;
+    // AddToMap(glm::vec2(500, 625), glm::vec2(100, 100), "yellow_cannon", yellow_cannon);
 
     // purple cannon
     Mesh* purple_cannon = object2D::CreateCannon("purple_cannon", corner, 100, purple, true);
     AddMeshToList(purple_cannon);
-    AddToMap(glm::vec2(700, 625), glm::vec2(100, 100), "purple_cannon", purple_cannon);
+    obj = Cannon(glm::vec2(700, 625), glm::vec2(100, 100), purple_cannon, purple);
+    gameObjects["purple_cannon"] = obj;
+    // AddToMap(glm::vec2(700, 625), glm::vec2(100, 100), "purple_cannon", purple_cannon);
 
-    // grey stars
+    // GREY STARS
     Mesh* star_grey = object2D::CreateStar("star_grey", glm::vec3(0, 0, 0), 40, lightGray, true);
     AddMeshToList(star_grey);
+    for (int i = 0; i < starsCollected; i++)
+    {
+        obj = GameObject(glm::vec2(900 + 50 * i, 525), glm::vec2(40, 40), meshes["star_grey"]);
+        gameObjects["star_grey" + std::to_string(i)] = obj;
+    }
+
+    // LAUNCHED STARS
+    Mesh* snow_star = object2D::CreateStar("snow_star", glm::vec3(0, 0, 4), 40, lightGray, true);
+    AddMeshToList(snow_star);
 
     // ENEMIES
     // purple enemy
-    Mesh* enemy = object2D::CreateEnemy("enemy_purple", corner, 50, purple, coolGray, true);
-    AddMeshToList(enemy);
+    Mesh* enemy_purple = object2D::CreateEnemy("enemy_purple", corner, 50, purple, coolGray, true);
+    AddMeshToList(enemy_purple);
 
     // blue enemy
-    Mesh* enemy2 = object2D::CreateEnemy("enemy_blue", corner, 50, blue, jordyBlue, true);
-    AddMeshToList(enemy2);
+    Mesh* enemy_blue = object2D::CreateEnemy("enemy_blue", corner, 50, blue, jordyBlue, true);
+    AddMeshToList(enemy_blue);
 
     // yellow enemy
-    Mesh* enemy3 = object2D::CreateEnemy("enemy_yellow", corner, 50, yellow, lightGreen, true);
-    AddMeshToList(enemy3);
+    Mesh* enemy_yellow = object2D::CreateEnemy("enemy_yellow", corner, 50, yellow, lightGreen, true);
+    AddMeshToList(enemy_yellow);
 
     // orange enemy
-    Mesh* enemy4 = object2D::CreateEnemy("enemy_orange", corner, 50, orange, hunyadiYellow, true);
-    AddMeshToList(enemy4);
+    Mesh* enemy_orange = object2D::CreateEnemy("enemy_orange", corner, 50, orange, hunyadiYellow, true);
+    AddMeshToList(enemy_orange);
 }
 
 
@@ -336,18 +354,29 @@ void Tema1::Update(float deltaTimeSeconds)
         const std::string& objName = pair.first;
         GameObject& obj = pair.second;
 
-        if (objName == "enemy_orange" || objName == "enemy_blue" || objName == "enemy_yellow" || objName == "enemy_purple")
+        modelMatrix = glm::mat3(1);
+
+        if (objName.compare(0, 5, "enemy") == 0)
         {
-			obj.center.x -= 2;
+            obj.center.x -= 20 * deltaTimeSeconds;
         }
 
-        if (obj.center.x < 0) {
+        if (objName.compare(0, 9, "snow_star") == 0)
+        {
+			obj.center.x += 100 * deltaTimeSeconds;
+            angularStep -= 10 * deltaTimeSeconds;
+
+            modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
+            modelMatrix *= transform2D::Rotate(angularStep);
+            modelMatrix *= transform2D::Translate(-obj.center.x, -obj.center.y);
+		}
+
+        if (obj.center.x < 0 || obj.center.x > 1270) {
             objectsToRemove.push_back(objName);
             std::cout << "lives: " << lives << std::endl;
             gameObjects.erase("heart" + std::to_string(--lives));
         }
 
-        modelMatrix = glm::mat3(1);
         modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
 
 		RenderMesh2D(obj.mesh, shaders["VertexColor"], modelMatrix);
@@ -357,7 +386,35 @@ void Tema1::Update(float deltaTimeSeconds)
     // Remove the objects outside of the loop
     for (const std::string& objname : objectsToRemove) 
         gameObjects.erase(objname);
-    
+
+    if (!line0.cannons.empty() && !line0.enemies.empty() && !(time % 250)) {
+        auto pair = line0.cannons.begin();
+        const std::string& objName = pair->first;
+        GameObject& obj = pair->second;
+
+        GameObject snow_star = GameObject(glm::vec2(obj.center.x + 50, obj.center.y), glm::vec2(50, 50), meshes["snow_star"]);
+        gameObjects["snow_star" + std::to_string(starsLaunched++)] = snow_star;
+    }
+
+    if (!line1.cannons.empty() && !line1.enemies.empty() && !(time % 250))
+    {
+		auto pair = line1.cannons.begin();
+		const std::string& objName = pair->first;
+		GameObject& obj = pair->second;
+
+		GameObject snow_star = GameObject(glm::vec2(obj.center.x + 50, obj.center.y), glm::vec2(50, 50), meshes["snow_star"]);
+		gameObjects["snow_star" + std::to_string(starsLaunched++)] = snow_star;
+	}
+
+    if (!line2.cannons.empty() && !line2.enemies.empty() && !(time % 250))
+    {
+        auto pair = line2.cannons.begin();
+        const std::string& objName = pair->first;
+        GameObject& obj = pair->second;
+
+        GameObject snow_star = GameObject(glm::vec2(obj.center.x + 50, obj.center.y), glm::vec2(50, 50), meshes["snow_star"]);
+        gameObjects["snow_star" + std::to_string(starsLaunched++)] = snow_star;
+    }
 
     time++;
 
@@ -365,72 +422,129 @@ void Tema1::Update(float deltaTimeSeconds)
     {
         int y = 100 + rand() % 400;
         int x = 100 + rand() % 1000;
-        AddToMap(glm::vec2(x, y), glm::vec2(100, 100), "star" + std::to_string(starsCount++), meshes["star"]);
+        // AddToMap(glm::vec2(x, y), glm::vec2(100, 100), "star" + std::to_string(starsCount++), meshes["star"]);
+        obj = Star(glm::vec2(x, y), glm::vec2(100, 100), meshes["star"]);
+        gameObjects["star" + std::to_string(starsCount++)] = obj;
     }
 
-    if (!(time % 400))
+    if (!(time % 600))
     {
-        std::cout << "Time: " << time << endl;
-
         // random enemy
         int color = rand() % 4;
         int row = rand() % 3;
+        std::string name;
 
         switch (color) {
         case 0:
-            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_orange", meshes["enemy_orange"]);
+            name = "enemy_orange" + std::to_string(enemyID++);
+            // AddToMap(glm::vec2(1270, 100 + 150 * row), glm::vec2(100, 100), name, meshes["enemy_orange"]);
+            obj = Enemy(glm::vec2(1270, 100 + 150 * row), glm::vec2(100, 100), meshes["enemy_orange"], orange);
+            gameObjects[name] = obj;
             break;
         case 1:
-            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_blue", meshes["enemy_blue"]);
+            name = "enemy_blue" + std::to_string(enemyID++);
+            // AddToMap(glm::vec2(1270, 100 + 150 * row), glm::vec2(100, 100), name, meshes["enemy_blue"]);
+            obj = Enemy(glm::vec2(1270, 100 + 150 * row), glm::vec2(100, 100), meshes["enemy_blue"], blue);
+            gameObjects[name] = obj;
             break;
         case 2:
-            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_yellow", meshes["enemy_yellow"]);
+            name = "enemy_yellow" + std::to_string(enemyID++);
+            // AddToMap(glm::vec2(1270, 100 + 150 * row), glm::vec2(100, 100), name, meshes["enemy_yellow"]);
+            obj = Enemy(glm::vec2(1270, 100 + 150 * row), glm::vec2(100, 100), meshes["enemy_yellow"], yellow);
+            gameObjects[name] = obj;
             break;
         case 3:
-            AddToMap(glm::vec2(1200, 100 + 150 * row), glm::vec2(100, 100), "enemy_purple", meshes["enemy_purple"]);
+            name = "enemy_purple" + std::to_string(enemyID++);
+            // AddToMap(glm::vec2(1270, 100 + 150 * row), glm::vec2(100, 100), name, meshes["enemy_purple"]);
+            obj = Enemy(glm::vec2(1270, 100 + 150 * row), glm::vec2(100, 100), meshes["enemy_purple"], purple);
+            gameObjects[name] = obj;
             break;
         }
+
+        switch (row) {
+        case 0:
+            line0.enemies[name] = gameObjects[name];
+            break;
+        case 1:
+            line1.enemies[name] = gameObjects[name];
+			break;
+        case 2:
+            line2.enemies[name] = gameObjects[name];
+            break;
+        }
+
+        printLines();
     }
 }
 
-void Tema1::AddToMap(glm::vec2 center, glm::vec2 size,const std::string& name, Mesh* mesh)
+//void Tema1::AddToMap(glm::vec2 center, glm::vec2 size,const std::string& name, Mesh* mesh)
+//{
+//    if (mesh == nullptr)
+//        throw std::runtime_error("Mesh is null");
+//
+//    GameObject obj;
+//
+//    if(mesh == meshes["orange_cannon"] || mesh == meshes["blue_cannon"] || mesh == meshes["yellow_cannon"] || mesh == meshes["purple_cannon"])
+//        obj = Cannon(center, size, mesh);
+//    
+//    if (mesh == meshes["star"])
+//        obj = Star(center, size, mesh);
+//
+//    if (mesh == meshes["enemy_orange"] || mesh == meshes["enemy_blue"] || mesh == meshes["enemy_yellow"] || mesh == meshes["enemy_purple"])
+//		obj = Enemy(center, size, mesh);
+//
+//    if(mesh == meshes["square"])
+//		obj = Square(center, size, mesh);
+//
+//    if(mesh == meshes["heart"])
+//		obj = GameObject(center, size, mesh);
+//
+//    if(mesh == meshes["star_grey"])
+//        obj = GameObject(center, size, mesh);
+//
+//    gameObjects[name] = obj;
+// }
+
+void Tema1::printLines()
 {
-    if (mesh == nullptr)
-        throw std::runtime_error("Mesh is null");
+    std::cout << "First line: ";
+    std::cout << "Cannons: ";
+    for (auto& pair : line0.cannons)
+		std::cout << pair.first << " ";
 
-    GameObject obj;
+    std::cout << "Enemies: ";
+	for (auto& pair : line0.enemies)
+        std::cout<< pair.first << " ";
 
-    if(mesh == meshes["orange_cannon"] || mesh == meshes["blue_cannon"] || mesh == meshes["yellow_cannon"] || mesh == meshes["purple_cannon"])
-        obj = Cannon(center, size, mesh);
-    
-    if (mesh == meshes["star"])
-        obj = Star(center, size, mesh);
+    std::cout << std::endl;
 
-    if (mesh == meshes["enemy_orange"] || mesh == meshes["enemy_blue"] || mesh == meshes["enemy_yellow"] || mesh == meshes["enemy_purple"])
-		obj = Enemy(center, size, mesh);
+    std::cout << "Second line: ";
+    std::cout << "Cannons: ";
+    for (auto& pair : line1.cannons)
+        std::cout << pair.first << " ";
 
-    if(mesh == meshes["square"])
-		obj = Square(center, size, mesh);
+    std::cout << "Enemies: ";
+    for (auto& pair : line1.enemies)
+		std::cout << pair.first << " ";
 
-    if(mesh == meshes["heart"])
-		obj = GameObject(center, size, mesh);
+    std::cout << std::endl;
 
-    if(mesh == meshes["star_grey"])
-        obj = GameObject(center, size, mesh);
+	std::cout << "Third line: ";
+	std::cout << "Cannons: ";
+	for (auto& pair : line2.cannons)
+		std::cout << pair.first << " ";
 
-    gameObjects[name] = obj;
+	std::cout << "Enemies: ";
+	for (auto& pair : line2.enemies)
+		std::cout << pair.first << " ";
+
+	std::cout << std::endl;
 }
 
 
 void Tema1::FrameEnd()
 {
 }
-
-
-/*
- *  These are callback functions. To find more about callbacks and
- *  how they behave, see `input_controller.h`.
- */
 
 
 void Tema1::OnInputUpdate(float deltaTime, int mods)
@@ -477,8 +591,6 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
     // Add mouse button press event
     if (button == GLFW_MOUSE_BUTTON_RIGHT) {
 
-        std::cout << "click right" << endl;
-
         for (auto& pair : gameObjects) {
             const std::string& objName = pair.first;
             GameObject& obj = pair.second;
@@ -493,7 +605,9 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 
                     if(obj.mesh == meshes["star"])
                     {
-                        AddToMap(glm::vec2(900 + 50 * starsCollected, 525), glm::vec2(40, 40), "star_grey" + std::to_string(starsCollected++), meshes["star_grey"]);
+                        // AddToMap(glm::vec2(900 + 50 * starsCollected, 525), glm::vec2(40, 40), "star_grey" + std::to_string(starsCollected++), meshes["star_grey"]);
+                        obj = GameObject(glm::vec2(900 + 50 * starsCollected, 525), glm::vec2(40, 40), meshes["star_grey"]);
+                        gameObjects["star_grey" + std::to_string(starsCollected++)] = obj;
                         std::cout << "Collected " << starsCollected << " stars" << endl;
                     }
 
@@ -550,7 +664,9 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                 }
 
 
-                AddToMap(obj.center, obj.size, objName + std::to_string(cannonID++), obj.mesh);
+                // AddToMap(obj.center, obj.size, objName + std::to_string(cannonID++), obj.mesh);
+                obj = Cannon(obj.center, obj.size, obj.mesh, obj.color);
+                gameObjects[objName + std::to_string(cannonID++)] = obj;
 
                 obj.isBeingDragged = true;
                 std::cout << "Object " << objName << " is being dragged" << endl;
@@ -593,6 +709,17 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
                             obj.isDraggable = false;
                             obj.isClickable = true;
                             collision = true;
+
+                            if(objName2.compare(0, 7, "square0") == 0)
+                                line0.cannons[objName] = gameObjects[objName];
+                            else if (objName2.compare(0, 7, "square1") == 0)
+                                line1.cannons[objName] = gameObjects[objName];
+							else if (objName2.compare(0, 7, "square2") == 0)
+                                line2.cannons[objName] = gameObjects[objName];
+
+                            printLines();
+
+                            break;
 						}
 					}
                 }

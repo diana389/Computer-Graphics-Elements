@@ -27,7 +27,8 @@ namespace m1
         void OnWindowResize(int width, int height) override;
         // void Tema1::RenderPermanentObjects();
         bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2, glm::vec2 size2);
-        void Tema1::AddToMap(glm::vec2 center, glm::vec2 size, const std::string& name, Mesh* mesh);
+        // void Tema1::AddToMap(glm::vec2 center, glm::vec2 size, const std::string& name, Mesh* mesh);
+        void Tema1::printLines();
 
     protected:
 
@@ -39,6 +40,7 @@ namespace m1
             bool canPlaceObject = false;
             bool isClickable = false;
             Mesh* mesh;
+            glm::vec3 color = glm::vec3(1, 1, 1);
 
             // Default constructor
             GameObject::GameObject() {
@@ -58,12 +60,13 @@ namespace m1
         // derived class
         struct Cannon : GameObject
         {
-            Cannon::Cannon(glm::vec2 center, glm::vec2 size, Mesh* mesh)
+            Cannon::Cannon(glm::vec2 center, glm::vec2 size, Mesh* mesh, glm::vec3 color)
             {
 				this->center = center;
 				this->size = size;
 				this->mesh = mesh;
                 this->isDraggable = true;
+                this->color = color;
             }
         };
 
@@ -91,24 +94,38 @@ namespace m1
 
         struct Enemy : GameObject
 		{
-			Enemy::Enemy(glm::vec2 center, glm::vec2 size, Mesh* mesh)
+            int strength = 3;
+
+			Enemy::Enemy(glm::vec2 center, glm::vec2 size, Mesh* mesh, glm::vec3 color)
             {
                 this->center = center;
 				this->size = size;
                 this->mesh = mesh;
+                this->color = color;
 			}
         };
 
+        struct Line
+        {
+            std::unordered_map<std::string, GameObject> cannons;
+            std::unordered_map<std::string, GameObject> enemies;
+        };
+
         std::unordered_map<std::string, GameObject> gameObjects;
+        GameObject obj;
+
+        Line line0, line1, line2;
 
         glm::mat3 modelMatrix;
         float translateX, translateY;
         float scaleX, scaleY;
-        float angularStep;
+        float angularStep = 0;
 
-        int lives, starsCount, starsCollected;
-        int time;
-        int cannonID;
+        int lives = 3, starsCount = 0, starsCollected = 4;
+        int time = 0;
+        int cannonID = 0;
+        int enemyID = 0;
+        int starsLaunched = 0;
 
         // colors
         glm::vec3 red = glm::vec3(1, 0, 0);
@@ -125,5 +142,6 @@ namespace m1
         glm::vec3 lightGray = glm::vec3(0.5, 0.5, 0.5);
         glm::vec3 hunyadiYellow = glm::vec3(246.0 / 255, 174.0 / 255, 45.0 / 255);
         glm::vec3 lavanderPink = glm::vec3(226.0 / 255, 163.0 / 255, 199.0 / 255);
+        glm::vec3 snow = glm::vec3(253.0 / 255, 247.0 / 255, 250.0 / 255);
     };
 }
