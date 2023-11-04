@@ -29,6 +29,12 @@ namespace m1
         bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2, glm::vec2 size2);
         // void Tema1::AddToMap(glm::vec2 center, glm::vec2 size, const std::string& name, Mesh* mesh);
         void Tema1::printLines();
+        void Tema1::Shoot();
+        void Tema1::GenerateStars();
+        void Tema1::GenerateEnemies();
+        void Tema1::CheckStarEnemyCollision();
+        bool Tema1::CheckClick(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size);
+        void Tema1::Pay(Mesh* mesh);
 
     protected:
 
@@ -82,6 +88,17 @@ namespace m1
 			}
 		};
 
+        struct LaunchedStar : GameObject
+        {
+            LaunchedStar::LaunchedStar(glm::vec2 center, glm::vec2 size, Mesh* mesh, glm::vec3 color)
+            {
+				this->center = center;
+				this->size = size;
+				this->mesh = mesh;
+				this->color = color;
+			}
+        };
+
         struct Square : GameObject
         {
             Square::Square(glm::vec2 center, glm::vec2 size, Mesh* mesh)
@@ -112,16 +129,17 @@ namespace m1
         };
 
         std::unordered_map<std::string, GameObject> gameObjects;
+        std::vector<std::string> objectsToRemove;
         GameObject obj;
 
-        Line line0, line1, line2;
+        Line lines[3];
 
         glm::mat3 modelMatrix;
         float translateX, translateY;
         float scaleX, scaleY;
         float angularStep = 0;
 
-        int lives = 3, starsCount = 0, starsCollected = 4;
+        int lives = 3, starsCount = 0, starsCollected = 6;
         int time = 0;
         int cannonID = 0;
         int enemyID = 0;
