@@ -682,6 +682,18 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 				if (!obj.isDraggable)
 					continue;
 
+				if (obj.mesh == meshes["cannon_orange"] && starsCollected < 1)
+					return; // not enough stars
+
+				if (obj.mesh == meshes["cannon_blue"] && starsCollected < 2)
+					return; // not enough stars
+
+				if (obj.mesh == meshes["cannon_yellow"] && starsCollected < 2)
+					return; // not enough stars
+
+				if (obj.mesh == meshes["cannon_purple"] && starsCollected < 3)
+					return; // not enough stars
+
 				// the object is draggable => create a new cannon and drag the old one
 				obj = Cannon(obj.center, obj.size, obj.mesh, obj.color);
 				gameObjects[objName + std::to_string(cannonID++)] = obj;
