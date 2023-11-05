@@ -220,6 +220,7 @@ void Tema1::Shoot()
                         std::cout << "Cannon " << objName_cannon << " is shooting at " << objName_enemy << std::endl;
                         objName = objName_cannon;
                         obj = obj_cannon;
+                        obj.center = obj_cannon.center;
                         break;
                     }
                 }
@@ -227,6 +228,8 @@ void Tema1::Shoot()
 
             LaunchedStar launched_star = LaunchedStar(glm::vec2(obj.center.x + 50, obj.center.y), glm::vec2(50, 50), meshes["launched_star"], obj.color);
             gameObjects["launched_star" + std::to_string(starsLaunched++)] = launched_star;
+
+            std::cout << "Launched star " << "launched_star" + std::to_string(starsLaunched - 1) << "from cannon " << objName << std::endl;
         }
     }
 }
@@ -391,8 +394,12 @@ void Tema1::Update(float deltaTimeSeconds)
         if (obj.center.x < 0) 
         {
             objectsToRemove.push_back(objName);
-            gameObjects.erase("heart" + std::to_string(--lives)); // remove a heart
 
+            // remove the enemy from the line map
+            for (int i = 0; i < 3; i++)
+                lines[i].enemies.erase(objName);
+
+            gameObjects.erase("heart" + std::to_string(--lives)); // remove a heart
             std::cout << "lives: " << lives << std::endl;
         }
 
@@ -402,7 +409,13 @@ void Tema1::Update(float deltaTimeSeconds)
 
         // remove the enemy
         if(obj.scale < 0)
-			objectsToRemove.push_back(objName);
+        {
+            objectsToRemove.push_back(objName);
+
+            // remove the enemy from the line map
+            for (int i = 0; i < 3; i++)
+                lines[i].enemies.erase(objName);
+        }
 
         // remove the stars that are outside of the screen
         if(obj.center.x > window->GetResolution().x)
@@ -595,7 +608,7 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                     // remove the cannon from the line map
                     for(int i = 0; i < 3; i++)
                     {
-                        for (auto& pair_cannon : lines[i].cannons)
+                       /* for (auto& pair_cannon : lines[i].cannons)
                         {
                             const std::string& objName_cannon = pair_cannon.first;
                             GameObject& obj_cannon = pair_cannon.second;
@@ -604,8 +617,8 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                                 objectsToRemove.push_back(objName_cannon);
                         }
 
-                        for (const std::string& objNameToRemove : objectsToRemove)
-                            lines[i].cannons.erase(objNameToRemove);
+                        for (const std::string& objNameToRemove : objectsToRemove)*/
+                            lines[i].cannons.erase(objName);
                     }
 
                     // remove the object from maps

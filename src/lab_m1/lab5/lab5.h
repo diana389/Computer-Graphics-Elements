@@ -36,6 +36,10 @@ namespace m1
         bool renderCameraTarget;
 
         // TODO(student): If you need any other class variables, define them here.
-
+        float FoV = RADIANS(60);
+        float left = -10.0f;
+        float right = 10.0f;
+        float bottom = -10.0f;
+        float top = 10.0f;
     };
 }   // namespace m1
