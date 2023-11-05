@@ -68,32 +68,32 @@ void Tema1::Init()
 
     // CANNONS TO PICK
     // orange cannon
-    Mesh* orange_cannon = object2D::CreateCannon("orange_cannon", corner, 100, orange, true);
-    AddMeshToList(orange_cannon);
-    obj = Cannon(glm::vec2(100, 625), glm::vec2(100, 100), orange_cannon, orange);
-    gameObjects["orange_cannon"] = obj;
-    // AddToMap(glm::vec2(100, 625), glm::vec2(100, 100), "orange_cannon", orange_cannon);
+    Mesh* cannon_orange = object2D::CreateCannon("cannon_orange", corner, 100, orange, true);
+    AddMeshToList(cannon_orange);
+    obj = Cannon(glm::vec2(100, 625), glm::vec2(100, 100), cannon_orange, orange);
+    gameObjects["cannon_orange"] = obj;
+    // AddToMap(glm::vec2(100, 625), glm::vec2(100, 100), "cannon_orange", cannon_orange);
 
     // blue cannon
-    Mesh* blue_cannon = object2D::CreateCannon("blue_cannon", corner, 100, blue, true);
-    AddMeshToList(blue_cannon);
-    obj = Cannon(glm::vec2(300, 625), glm::vec2(100, 100), blue_cannon, blue);
-    gameObjects["blue_cannon"] = obj;
-    // AddToMap(glm::vec2(300, 625), glm::vec2(100, 100), "blue_cannon", blue_cannon);
+    Mesh* cannon_blue = object2D::CreateCannon("cannon_blue", corner, 100, blue, true);
+    AddMeshToList(cannon_blue);
+    obj = Cannon(glm::vec2(300, 625), glm::vec2(100, 100), cannon_blue, blue);
+    gameObjects["cannon_blue"] = obj;
+    // AddToMap(glm::vec2(300, 625), glm::vec2(100, 100), "cannon_blue", cannon_blue);
 
     // yellow cannon
-    Mesh* yellow_cannon = object2D::CreateCannon("yellow_cannon", corner, 100, yellow, true);
-    AddMeshToList(yellow_cannon);
-    obj = Cannon(glm::vec2(500, 625), glm::vec2(100, 100), yellow_cannon, yellow);
-    gameObjects["yellow_cannon"] = obj;
-    // AddToMap(glm::vec2(500, 625), glm::vec2(100, 100), "yellow_cannon", yellow_cannon);
+    Mesh* cannon_yellow = object2D::CreateCannon("cannon_yellow", corner, 100, yellow, true);
+    AddMeshToList(cannon_yellow);
+    obj = Cannon(glm::vec2(500, 625), glm::vec2(100, 100), cannon_yellow, yellow);
+    gameObjects["cannon_yellow"] = obj;
+    // AddToMap(glm::vec2(500, 625), glm::vec2(100, 100), "cannon_yellow", cannon_yellow);
 
     // purple cannon
-    Mesh* purple_cannon = object2D::CreateCannon("purple_cannon", corner, 100, purple, true);
-    AddMeshToList(purple_cannon);
-    obj = Cannon(glm::vec2(700, 625), glm::vec2(100, 100), purple_cannon, purple);
-    gameObjects["purple_cannon"] = obj;
-    // AddToMap(glm::vec2(700, 625), glm::vec2(100, 100), "purple_cannon", purple_cannon);
+    Mesh* cannon_purple = object2D::CreateCannon("cannon_purple", corner, 100, purple, true);
+    AddMeshToList(cannon_purple);
+    obj = Cannon(glm::vec2(700, 625), glm::vec2(100, 100), cannon_purple, purple);
+    gameObjects["cannon_purple"] = obj;
+    // AddToMap(glm::vec2(700, 625), glm::vec2(100, 100), "cannon_purple", cannon_purple);
 
     // GREY STARS
     Mesh* star_grey = object2D::CreateStar("star_grey", glm::vec3(0, 0, 0), 40, lightGray, true);
@@ -105,8 +105,17 @@ void Tema1::Init()
     }
 
     // LAUNCHED STARS
-    Mesh* launched_star = object2D::CreateStar("launched_star", glm::vec3(0, 0, 4), 40, snow, true);
-    AddMeshToList(launched_star);
+    Mesh* launched_star_orange = object2D::CreateStar("launched_star_orange", glm::vec3(0, 0, 4), 40, orange, true);
+    AddMeshToList(launched_star_orange);
+
+    Mesh* launched_star_blue = object2D::CreateStar("launched_star_blue", glm::vec3(0, 0, 4), 40, blue, true);
+    AddMeshToList(launched_star_blue);
+
+    Mesh* launched_star_yellow = object2D::CreateStar("launched_star_yellow", glm::vec3(0, 0, 4), 40, yellow, true);
+    AddMeshToList(launched_star_yellow);
+
+    Mesh* launched_star_purple = object2D::CreateStar("launched_star_purple", glm::vec3(0, 0, 4), 40, purple, true);
+    AddMeshToList(launched_star_purple);
 
     // ENEMIES
     // purple enemy
@@ -198,12 +207,16 @@ bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2
 
 void Tema1::Shoot()
 {
+    obj.center = glm::vec2(500, 500);
+    obj.color = snow;
+
+    if (time % 200)
+        return;
+
     for(int i = 0; i < 3; i++)
     {
-        if (!lines[i].cannons.empty() && !lines[i].enemies.empty() && !(time % 200)) {
-            auto pair = lines[i].cannons.begin();
-            std::string objName = pair->first;
-            GameObject& obj = pair->second;
+        if (lines[i].cannons.empty() || lines[i].enemies.empty())
+            continue;
 
             for (auto& pair_cannon : lines[i].cannons)
             {
@@ -218,19 +231,30 @@ void Tema1::Shoot()
                     if (obj_cannon.color == obj_enemy.color)
                     {
                         std::cout << "Cannon " << objName_cannon << " is shooting at " << objName_enemy << std::endl;
-                        objName = objName_cannon;
-                        obj = obj_cannon;
-                        obj.center = obj_cannon.center;
+                        LaunchedStar launched_star;
+
+                        printLines();
+
+                        if (obj_cannon.color == orange)
+                            launched_star = LaunchedStar(glm::vec2(obj_cannon.center.x + 50, obj_cannon.center.y), glm::vec2(50, 50), meshes["launched_star_orange"], obj_cannon.color);
+
+                        if (obj_cannon.color == blue)
+                            launched_star = LaunchedStar(glm::vec2(obj_cannon.center.x + 50, obj_cannon.center.y), glm::vec2(50, 50), meshes["launched_star_blue"], obj_cannon.color);
+
+                        if (obj_cannon.color == yellow)
+                            launched_star = LaunchedStar(glm::vec2(obj_cannon.center.x + 50, obj_cannon.center.y), glm::vec2(50, 50), meshes["launched_star_yellow"], obj_cannon.color);
+
+                        if (obj_cannon.color == purple)
+                            launched_star = LaunchedStar(glm::vec2(obj_cannon.center.x + 50, obj_cannon.center.y), glm::vec2(50, 50), meshes["launched_star_purple"], obj_cannon.color);
+
+                        gameObjects["launched_star" + std::to_string(starsLaunched++)] = launched_star;
+
+                        std::cout << "Launched star " << "launched_star " << launched_star.color << " from " << objName_cannon << " " << obj.color << std::endl;
+
                         break;
                     }
                 }
             }
-
-            LaunchedStar launched_star = LaunchedStar(glm::vec2(obj.center.x + 50, obj.center.y), glm::vec2(50, 50), meshes["launched_star"], obj.color);
-            gameObjects["launched_star" + std::to_string(starsLaunched++)] = launched_star;
-
-            std::cout << "Launched star " << "launched_star" + std::to_string(starsLaunched - 1) << "from cannon " << objName << std::endl;
-        }
     }
 }
 
@@ -330,6 +354,50 @@ void Tema1::CheckStarEnemyCollision()
     }
 }
 
+void Tema1::CheckCannonEnemyCollision()
+{
+    for (auto& pair : gameObjects)
+    {
+        const std::string& objName = pair.first;
+        GameObject& obj = pair.second;
+
+        if (objName.compare(0, 6, "cannon") == 0)
+        {
+            bool isPlaced = false;
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (auto& pair2 : lines[i].cannons)
+                {
+					const std::string& objName2 = pair2.first;
+					GameObject& obj2 = pair2.second;
+
+                    if (obj.center == obj2.center)
+                        isPlaced = true;
+				}
+            }
+
+            if(!isPlaced)
+                continue;
+
+            for (auto& pair2 : gameObjects)
+            {
+                const std::string& objName2 = pair2.first;
+                GameObject& obj2 = pair2.second;
+
+                if (objName2.compare(0, 5, "enemy") == 0)
+                {
+                    if (CheckCollision(obj.center, obj.size, obj2.center, obj2.size))
+                    {
+                        obj.isBeingDestroyed = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
 void Tema1::printLines()
 {
     std::cout << "First line: ";
@@ -363,7 +431,19 @@ void Tema1::printLines()
     for (auto& pair : lines[2].enemies)
         std::cout << pair.first << " ";
 
-    std::cout << std::endl;
+    std::cout << std::endl << std::endl;
+}
+
+void Tema1::RemoveObject(const std::string& objName)
+{
+    objectsToRemove.push_back(objName);
+
+    // remove the enemy from the line map
+    for (int i = 0; i < 3; i++)
+    {
+        lines[i].enemies.erase(objName);
+        lines[i].cannons.erase(objName);
+    }
 }
 
 void Tema1::Update(float deltaTimeSeconds)
@@ -393,29 +473,19 @@ void Tema1::Update(float deltaTimeSeconds)
         // remove the enemies that are outside of the screen
         if (obj.center.x < 0) 
         {
-            objectsToRemove.push_back(objName);
-
-            // remove the enemy from the line map
-            for (int i = 0; i < 3; i++)
-                lines[i].enemies.erase(objName);
+            RemoveObject(objName);
 
             gameObjects.erase("heart" + std::to_string(--lives)); // remove a heart
             std::cout << "lives: " << lives << std::endl;
         }
 
-        // rescale if the enemy is being destroyed
+        // rescale if the object is being destroyed
         if(obj.isBeingDestroyed)
 			obj.scale -= 0.8 * deltaTimeSeconds;
 
-        // remove the enemy
+        // remove the object
         if(obj.scale < 0)
-        {
-            objectsToRemove.push_back(objName);
-
-            // remove the enemy from the line map
-            for (int i = 0; i < 3; i++)
-                lines[i].enemies.erase(objName);
-        }
+            RemoveObject(objName);
 
         // remove the stars that are outside of the screen
         if(obj.center.x > window->GetResolution().x)
@@ -442,6 +512,7 @@ void Tema1::Update(float deltaTimeSeconds)
     GenerateStars();
     GenerateEnemies();
     CheckStarEnemyCollision();
+    CheckCannonEnemyCollision();
 }
 
 void Tema1::FrameEnd()
@@ -468,7 +539,7 @@ bool Tema1::CheckClick(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size)
 
 void Tema1::Pay(Mesh* mesh)
 {
-    if (mesh == meshes["orange_cannon"])
+    if (mesh == meshes["cannon_orange"])
     {
         if (starsCollected < 1)
             return; // not enough stars
@@ -476,7 +547,7 @@ void Tema1::Pay(Mesh* mesh)
             gameObjects.erase("star_grey" + std::to_string(--starsCollected));
     }
 
-    if (mesh == meshes["blue_cannon"])
+    if (mesh == meshes["cannon_blue"])
     {
         if (starsCollected < 2)
             return; // not enough stars
@@ -487,7 +558,7 @@ void Tema1::Pay(Mesh* mesh)
         }
     }
 
-    if (mesh == meshes["yellow_cannon"])
+    if (mesh == meshes["cannon_yellow"])
     {
         if (starsCollected < 2)
             return; // not enough stars
@@ -498,7 +569,7 @@ void Tema1::Pay(Mesh* mesh)
         }
     }
 
-    if (mesh == meshes["purple_cannon"])
+    if (mesh == meshes["cannon_purple"])
     {
         if (starsCollected < 3)
             return; // not enough stars
@@ -564,10 +635,10 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 {
     // compute the mouse coordinates
     mouseY = window->GetResolution().y - mouseY;
-    std::cout<< "Mouse clicked at " << mouseX << ", " << mouseY << endl;
-
+    
     // Add mouse button press event
     if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        std::cout<< "Mouse clicked at " << mouseX << ", " << mouseY << endl;
 
         // check if a star can be collected
         for (auto& pair : gameObjects) {
@@ -606,27 +677,8 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                 if (obj.isClickable)
                 {
                     // remove the cannon from the line map
-                    for(int i = 0; i < 3; i++)
-                    {
-                       /* for (auto& pair_cannon : lines[i].cannons)
-                        {
-                            const std::string& objName_cannon = pair_cannon.first;
-                            GameObject& obj_cannon = pair_cannon.second;
-
-                            if (objName_cannon == objName)
-                                objectsToRemove.push_back(objName_cannon);
-                        }
-
-                        for (const std::string& objNameToRemove : objectsToRemove)*/
-                            lines[i].cannons.erase(objName);
-                    }
-
-                    // remove the object from maps
-                    gameObjects.erase(objName);
-
-                    printLines();
-
-                    return;
+                    RemoveObject(objName);
+                    break;
                 }
 
                 // the object is not clickable or draggable
@@ -641,6 +693,12 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
                 return;
             }
         }
+
+        // remove the object from maps
+        for (const std::string& objname : objectsToRemove)
+            gameObjects.erase(objname);
+
+        printLines();
     }
 }
 

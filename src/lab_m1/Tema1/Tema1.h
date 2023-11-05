@@ -12,33 +12,6 @@ namespace m1
 
         void Init() override;
 
-    private:
-        void FrameStart() override;
-        void Update(float deltaTimeSeconds) override;
-        void FrameEnd() override;
-
-        void OnInputUpdate(float deltaTime, int mods) override;
-        void OnKeyPress(int key, int mods) override;
-        void OnKeyRelease(int key, int mods) override;
-        void OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) override;
-        void OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) override;
-        void OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) override;
-        void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
-        void OnWindowResize(int width, int height) override;
-        // void Tema1::RenderPermanentObjects();
-        bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2, glm::vec2 size2);
-        // void Tema1::AddToMap(glm::vec2 center, glm::vec2 size, const std::string& name, Mesh* mesh);
-        void Tema1::printLines();
-        void Tema1::Shoot();
-        void Tema1::GenerateStars();
-        void Tema1::GenerateEnemies();
-        void Tema1::CheckStarEnemyCollision();
-        bool Tema1::CheckClick(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size);
-        void Tema1::Pay(Mesh* mesh);
-        bool Tema1::IsSpotOcupied(glm::vec2 center);
-
-    protected:
-
         struct GameObject {
             glm::vec2 center;
             glm::vec2 size;
@@ -70,57 +43,62 @@ namespace m1
         {
             Cannon::Cannon(glm::vec2 center, glm::vec2 size, Mesh* mesh, glm::vec3 color)
             {
-				this->center = center;
-				this->size = size;
-				this->mesh = mesh;
+                this->center = center;
+                this->size = size;
+                this->mesh = mesh;
                 this->isDraggable = true;
                 this->color = color;
             }
         };
 
         struct Star : GameObject
-		{
-			Star::Star(glm::vec2 center, glm::vec2 size, Mesh* mesh)
-			{
-				this->center = center;
-				this->size = size;
-				this->mesh = mesh;
+        {
+            Star::Star(glm::vec2 center, glm::vec2 size, Mesh* mesh)
+            {
+                this->center = center;
+                this->size = size;
+                this->mesh = mesh;
                 this->isClickable = true;
-			}
-		};
+            }
+        };
 
         struct LaunchedStar : GameObject
         {
+            LaunchedStar::LaunchedStar()
+            {
+                LaunchedStar(glm::vec2(0, 0), glm::vec2(0, 0), NULL, glm::vec3(1, 1, 1));
+            }
+
             LaunchedStar::LaunchedStar(glm::vec2 center, glm::vec2 size, Mesh* mesh, glm::vec3 color)
             {
-				this->center = center;
-				this->size = size;
-				this->mesh = mesh;
-				this->color = color;
-			}
+                this->center = center;
+                this->size = size;
+                this->mesh = mesh;
+                this->color = color;
+            }
         };
 
         struct Square : GameObject
         {
             Square::Square(glm::vec2 center, glm::vec2 size, Mesh* mesh)
-			{
-				this->center = center;
-				this->size = size;
-				this->mesh = mesh;
+            {
+                this->center = center;
+                this->size = size;
+                this->mesh = mesh;
                 this->canPlaceObject = true;
-			}
+            }
         };
 
         struct Enemy : GameObject
-		{
-			Enemy::Enemy(glm::vec2 center, glm::vec2 size, Mesh* mesh, glm::vec3 color)
+        {
+            Enemy::Enemy(glm::vec2 center, glm::vec2 size, Mesh* mesh, glm::vec3 color)
             {
                 this->center = center;
-				this->size = size;
+                this->size = size;
                 this->mesh = mesh;
                 this->color = color;
                 this->strength = 3;
-			}
+            }
         };
 
         struct Line
@@ -128,6 +106,35 @@ namespace m1
             std::unordered_map<std::string, GameObject> cannons;
             std::unordered_map<std::string, GameObject> enemies;
         };
+
+    private:
+        void FrameStart() override;
+        void Update(float deltaTimeSeconds) override;
+        void FrameEnd() override;
+
+        void OnInputUpdate(float deltaTime, int mods) override;
+        void OnKeyPress(int key, int mods) override;
+        void OnKeyRelease(int key, int mods) override;
+        void OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) override;
+        void OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) override;
+        void OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) override;
+        void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
+        void OnWindowResize(int width, int height) override;
+        // void Tema1::RenderPermanentObjects();
+        bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2, glm::vec2 size2);
+        // void Tema1::AddToMap(glm::vec2 center, glm::vec2 size, const std::string& name, Mesh* mesh);
+        void Tema1::printLines();
+        void Tema1::Shoot();
+        void Tema1::GenerateStars();
+        void Tema1::GenerateEnemies();
+        void Tema1::CheckStarEnemyCollision();
+        bool Tema1::CheckClick(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size);
+        void Tema1::Pay(Mesh* mesh);
+        bool Tema1::IsSpotOcupied(glm::vec2 center);
+        void Tema1::RemoveObject(const std::string& objName);
+        void Tema1::CheckCannonEnemyCollision();
+
+    protected:
 
         std::unordered_map<std::string, GameObject> gameObjects;
         std::vector<std::string> objectsToRemove;
