@@ -14,11 +14,9 @@ Tema1::Tema1()
 {
 }
 
-
 Tema1::~Tema1()
 {
 }
-
 
 void Tema1::Init()
 {
@@ -67,9 +65,6 @@ void Tema1::Init()
     // PINK STAR
     Mesh* star = object2D::CreateStar("star", glm::vec3(0, 0, 5), 60, lavanderPink, true);
     AddMeshToList(star);
-    obj = Star(glm::vec2(900, 300), glm::vec2(100, 100), star);
-    gameObjects["star"] = obj;
-    // AddToMap(glm::vec2(900, 300), glm::vec2(100, 100), "star", star);
 
     // CANNONS TO PICK
     // orange cannon
@@ -131,7 +126,6 @@ void Tema1::Init()
     AddMeshToList(enemy_orange);
 }
 
-
 void Tema1::FrameStart()
 {
     // Clears the color buffer (using the previously set color) and depth buffer
@@ -180,6 +174,7 @@ void Tema1::FrameStart()
 		RenderMesh2D(meshes["star_grey"], shaders["VertexColor"], modelMatrix);
     }
 }
+
 
 bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2, glm::vec2 size2)
 {
@@ -238,7 +233,7 @@ void Tema1::Shoot()
 
 void Tema1::GenerateStars()
 {
-    if (!(time % 300))
+    if (!(time % 200))
     {
         int y = 100 + rand() % 400;
         int x = 100 + rand() % 1000;
@@ -321,7 +316,8 @@ void Tema1::CheckStarEnemyCollision()
                         }
 
                         if (obj2.strength == 0)
-                            objectsToRemove.push_back(objName2);
+                            obj2.isBeingDestroyed = true;
+                            // objectsToRemove.push_back(objName2);
 
                         break;
                     }
@@ -329,6 +325,42 @@ void Tema1::CheckStarEnemyCollision()
             }
         }
     }
+}
+
+void Tema1::printLines()
+{
+    std::cout << "First line: ";
+    std::cout << "Cannons: ";
+    for (auto& pair : lines[0].cannons)
+        std::cout << pair.first << " ";
+
+    std::cout << "Enemies: ";
+    for (auto& pair : lines[0].enemies)
+        std::cout << pair.first << " ";
+
+    std::cout << std::endl;
+
+    std::cout << "Second line: ";
+    std::cout << "Cannons: ";
+    for (auto& pair : lines[1].cannons)
+        std::cout << pair.first << " ";
+
+    std::cout << "Enemies: ";
+    for (auto& pair : lines[1].enemies)
+        std::cout << pair.first << " ";
+
+    std::cout << std::endl;
+
+    std::cout << "Third line: ";
+    std::cout << "Cannons: ";
+    for (auto& pair : lines[2].cannons)
+        std::cout << pair.first << " ";
+
+    std::cout << "Enemies: ";
+    for (auto& pair : lines[2].enemies)
+        std::cout << pair.first << " ";
+
+    std::cout << std::endl;
 }
 
 void Tema1::Update(float deltaTimeSeconds)
@@ -341,7 +373,7 @@ void Tema1::Update(float deltaTimeSeconds)
         modelMatrix = glm::mat3(1);
 
         // update the position of the enemy
-        if (objName.compare(0, 5, "enemy") == 0)
+        if (objName.compare(0, 5, "enemy") == 0 && !obj.isBeingDestroyed)
             obj.center.x -= 50 * deltaTimeSeconds;
 
         // update the position of the launched star
@@ -364,11 +396,23 @@ void Tema1::Update(float deltaTimeSeconds)
             std::cout << "lives: " << lives << std::endl;
         }
 
+        // rescale if the enemy is being destroyed
+        if(obj.isBeingDestroyed)
+			obj.scale -= 0.8 * deltaTimeSeconds;
+
+        // remove the enemy
+        if(obj.scale < 0)
+			objectsToRemove.push_back(objName);
+
         // remove the stars that are outside of the screen
         if(obj.center.x > window->GetResolution().x)
             objectsToRemove.push_back(objName);
 
         // render the object
+        modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
+        modelMatrix *= transform2D::Scale(obj.scale, obj.scale);
+        modelMatrix *= transform2D::Translate(-obj.center.x, -obj.center.y);
+        
         modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
 		RenderMesh2D(obj.mesh, shaders["VertexColor"], modelMatrix);
     }
@@ -387,163 +431,26 @@ void Tema1::Update(float deltaTimeSeconds)
     CheckStarEnemyCollision();
 }
 
-void Tema1::printLines()
-{
-    std::cout << "First line: ";
-    std::cout << "Cannons: ";
-    for (auto& pair : lines[0].cannons)
-		std::cout << pair.first << " ";
-
-    std::cout << "Enemies: ";
-	for (auto& pair : lines[0].enemies)
-        std::cout<< pair.first << " ";
-
-    std::cout << std::endl;
-
-    std::cout << "Second line: ";
-    std::cout << "Cannons: ";
-    for (auto& pair : lines[1].cannons)
-        std::cout << pair.first << " ";
-
-    std::cout << "Enemies: ";
-    for (auto& pair : lines[1].enemies)
-		std::cout << pair.first << " ";
-
-    std::cout << std::endl;
-
-	std::cout << "Third line: ";
-	std::cout << "Cannons: ";
-	for (auto& pair : lines[2].cannons)
-		std::cout << pair.first << " ";
-
-	std::cout << "Enemies: ";
-	for (auto& pair : lines[2].enemies)
-		std::cout << pair.first << " ";
-
-	std::cout << std::endl;
-}
-
-
 void Tema1::FrameEnd()
 {
 }
 
 
-void Tema1::OnInputUpdate(float deltaTime, int mods)
-{
-    // Add key press event
-}
-
-
-void Tema1::OnKeyPress(int key, int mods)
-{
-    // Add key press event
-}
-
-
-void Tema1::OnKeyRelease(int key, int mods)
-{
-    // Add key release event
-}
-
-
-void Tema1::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
-{
-    // compute the mouse coordinates
-    mouseY = window->GetResolution().y - mouseY;
-
-    for (auto& pair : gameObjects) {
-        const std::string& objName = pair.first;
-        GameObject& obj = pair.second;
-
-        // update the position of the object based on the mouse cursor and offset
-        if (obj.isBeingDragged) {
-            obj.center.x += mouseX - obj.center.x;
-            obj.center.y += mouseY - obj.center.y;
-        }
-    }
-}
-
 bool Tema1::CheckClick(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size)
 {
-    if (mouseX < (center.x - size.x / 2.f)) 
+    if (mouseX < (center.x - size.x / 2.f))
         return false;
 
     if (mouseX > (center.x + size.x / 2.f))
         return false;
 
     if (mouseY < (center.y - size.y / 2.f))
-		return false;
+        return false;
 
     if (mouseY > (center.y + size.y / 2.f))
         return false;
 
     return true;
-}
-
-void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
-{
-    // compute the mouse coordinates
-    mouseY = window->GetResolution().y - mouseY;
-    std::cout<< "Mouse clicked at " << mouseX << ", " << mouseY << endl;
-
-    // Add mouse button press event
-    if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-
-        // check if a star can be collected
-        for (auto& pair : gameObjects) {
-            const std::string& objName = pair.first;
-            GameObject& obj = pair.second;
-
-            // check if the mouse is over the object
-            if (CheckClick(mouseX, mouseY, obj.center, obj.size))
-            {
-                // check if the object can be clicked
-                if (obj.isClickable)
-                {
-                    // if the object is a star, collect it
-                    if (obj.mesh == meshes["star"])
-                    {
-                        obj = GameObject(glm::vec2(900 + 50 * starsCollected, 525), glm::vec2(40, 40), meshes["star_grey"]);
-                        gameObjects["star_grey" + std::to_string(starsCollected++)] = obj;
-
-                        // remove the object from the map
-                        gameObjects.erase(objName);
-                        return;
-                    }
-                }
-            }
-        }
-
-        // check if a cannon can be dragged or clicked
-        for (auto& pair : gameObjects) {
-            const std::string& objName = pair.first;
-            GameObject& obj = pair.second;
-
-            // check if the mouse is over the object
-            if (CheckClick(mouseX, mouseY, obj.center, obj.size))
-            {
-                // check if the object can be clicked
-                if (obj.isClickable)
-                {
-                    // remove the object from the map
-                    gameObjects.erase(objName);
-                    return;
-                }
-
-                // the object is not clickable or draggable
-                if (!obj.isDraggable)
-                    continue;
-
-                // the object is draggable => create a new cannon and drag the old one
-                obj = Cannon(obj.center, obj.size, obj.mesh, obj.color);
-                gameObjects[objName + std::to_string(cannonID++)] = obj;
-
-                obj.isBeingDragged = true;
-                return;
-            }
-        }
-    }
 }
 
 void Tema1::Pay(Mesh* mesh)
@@ -591,6 +498,139 @@ void Tema1::Pay(Mesh* mesh)
     }
 }
 
+bool Tema1::IsSpotOcupied(glm::vec2 center)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        if (!lines[i].cannons.empty()) {
+            for (auto& pair_cannon : lines[i].cannons)
+            {
+                const std::string& objName_cannon = pair_cannon.first;
+                GameObject& obj_cannon = pair_cannon.second;
+
+                if (obj_cannon.center == center)
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+
+void Tema1::OnInputUpdate(float deltaTime, int mods)
+{
+}
+
+void Tema1::OnKeyPress(int key, int mods)
+{
+}
+
+void Tema1::OnKeyRelease(int key, int mods)
+{
+}
+
+void Tema1::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
+{
+    // compute the mouse coordinates
+    mouseY = window->GetResolution().y - mouseY;
+
+    for (auto& pair : gameObjects) {
+        const std::string& objName = pair.first;
+        GameObject& obj = pair.second;
+
+        // update the position of the object based on the mouse cursor and offset
+        if (obj.isBeingDragged) {
+            obj.center.x += mouseX - obj.center.x;
+            obj.center.y += mouseY - obj.center.y;
+        }
+    }
+}
+
+void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
+{
+    // compute the mouse coordinates
+    mouseY = window->GetResolution().y - mouseY;
+    std::cout<< "Mouse clicked at " << mouseX << ", " << mouseY << endl;
+
+    // Add mouse button press event
+    if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+
+        // check if a star can be collected
+        for (auto& pair : gameObjects) {
+            const std::string& objName = pair.first;
+            GameObject& obj = pair.second;
+
+            // check if the mouse is over the object
+            if (CheckClick(mouseX, mouseY, obj.center, obj.size))
+            {
+                // check if the object can be clicked
+                if (obj.isClickable)
+                {
+                    // if the object is a star, collect it
+                    if (obj.mesh == meshes["star"])
+                    {
+                        obj = GameObject(glm::vec2(900 + 50 * starsCollected, 525), glm::vec2(40, 40), meshes["star_grey"]);
+                        gameObjects["star_grey" + std::to_string(starsCollected++)] = obj;
+
+                        // remove the object from the map
+                        gameObjects.erase(objName);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // check if a cannon can be dragged or clicked
+        for (auto& pair : gameObjects) {
+            const std::string& objName = pair.first;
+            GameObject& obj = pair.second;
+
+            // check if the mouse is over the object
+            if (CheckClick(mouseX, mouseY, obj.center, obj.size))
+            {
+                // check if the object can be clicked
+                if (obj.isClickable)
+                {
+                    // remove the cannon from the line map
+                    for(int i = 0; i < 3; i++)
+                    {
+                        for (auto& pair_cannon : lines[i].cannons)
+                        {
+                            const std::string& objName_cannon = pair_cannon.first;
+                            GameObject& obj_cannon = pair_cannon.second;
+
+                            if (objName_cannon == objName)
+                                objectsToRemove.push_back(objName_cannon);
+                        }
+
+                        for (const std::string& objNameToRemove : objectsToRemove)
+                            lines[i].cannons.erase(objNameToRemove);
+                    }
+
+                    // remove the object from maps
+                    gameObjects.erase(objName);
+
+                    printLines();
+
+                    return;
+                }
+
+                // the object is not clickable or draggable
+                if (!obj.isDraggable)
+                    continue;
+
+                // the object is draggable => create a new cannon and drag the old one
+                obj = Cannon(obj.center, obj.size, obj.mesh, obj.color);
+                gameObjects[objName + std::to_string(cannonID++)] = obj;
+
+                obj.isBeingDragged = true;
+                return;
+            }
+        }
+    }
+}
+
 void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 {
     // compute the mouse coordinates
@@ -617,6 +657,11 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
                     if (objName2 != objName && obj2.canPlaceObject) {
                         // check if the object is colliding with another object
                         if (CheckCollision(obj.center, obj.size, obj2.center, obj2.size)) {
+
+                            // check if there is already a cannon on that square
+                            if(IsSpotOcupied(obj2.center))
+                                break;
+
                             // the object is colliding with another object => place it
                             obj.center = obj2.center;
                             obj.isDraggable = false;
@@ -651,11 +696,9 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
     }
 }
 
-
 void Tema1::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)
 {
 }
-
 
 void Tema1::OnWindowResize(int width, int height)
 {

@@ -35,6 +35,7 @@ namespace m1
         void Tema1::CheckStarEnemyCollision();
         bool Tema1::CheckClick(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size);
         void Tema1::Pay(Mesh* mesh);
+        bool Tema1::IsSpotOcupied(glm::vec2 center);
 
     protected:
 
@@ -48,12 +49,12 @@ namespace m1
             Mesh* mesh;
             glm::vec3 color = glm::vec3(1, 1, 1);
             int strength;
+            bool isBeingDestroyed = false;
+            float scale = 1;
 
             // Default constructor
             GameObject::GameObject() {
-                this->center = glm::vec2(0, 0);
-                this->size = glm::vec2(1, 1);
-                this->mesh = NULL;
+                GameObject(glm::vec2(0, 0), glm::vec2(0, 0), NULL);
             }
 
             // Constructor to initialize the class members
@@ -135,11 +136,11 @@ namespace m1
         Line lines[3];
 
         glm::mat3 modelMatrix;
-        float translateX, translateY;
-        float scaleX, scaleY;
         float angularStep = 0;
 
-        int lives = 3, starsCount = 0, starsCollected = 6;
+        int lives = 3;
+        int starsCount = 0; 
+        int starsCollected = 6;
         int time = 0;
         int cannonID = 0;
         int enemyID = 0;
