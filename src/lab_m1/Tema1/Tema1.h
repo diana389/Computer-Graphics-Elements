@@ -107,6 +107,28 @@ namespace m1
             std::unordered_map<std::string, GameObject> enemies;
         };
 
+        struct ViewportSpace
+        {
+            ViewportSpace() : x(0), y(0), width(1), height(1) {}
+            ViewportSpace(int x, int y, int width, int height)
+                : x(x), y(y), width(width), height(height) {}
+            int x;
+            int y;
+            int width;
+            int height;
+        };
+
+        struct LogicSpace
+        {
+            LogicSpace() : x(0), y(0), width(1), height(1) {}
+            LogicSpace(float x, float y, float width, float height)
+                : x(x), y(y), width(width), height(height) {}
+            float x;
+            float y;
+            float width;
+            float height;
+        };
+
     private:
         void FrameStart() override;
         void Update(float deltaTimeSeconds) override;
@@ -120,9 +142,7 @@ namespace m1
         void OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) override;
         void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
         void OnWindowResize(int width, int height) override;
-        // void Tema1::RenderPermanentObjects();
         bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2, glm::vec2 size2);
-        // void Tema1::AddToMap(glm::vec2 center, glm::vec2 size, const std::string& name, Mesh* mesh);
         void Tema1::printLines();
         void Tema1::Shoot();
         void Tema1::GenerateStars();
@@ -169,5 +189,9 @@ namespace m1
         glm::vec3 hunyadiYellow = glm::vec3(246.0 / 255, 174.0 / 255, 45.0 / 255);
         glm::vec3 lavanderPink = glm::vec3(226.0 / 255, 163.0 / 255, 199.0 / 255);
         glm::vec3 snow = glm::vec3(253.0 / 255, 247.0 / 255, 250.0 / 255);
+
+        ViewportSpace viewSpace;
+        LogicSpace logicSpace;
+        glm::mat3 visMatrix;
     };
 }
