@@ -148,7 +148,7 @@ namespace m1
         void Tema1::GenerateStars();
         void Tema1::GenerateEnemies();
         void Tema1::CheckStarEnemyCollision();
-        bool Tema1::CheckClick(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size);
+        bool Tema1::MouseHover(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size);
         void Tema1::Pay(Mesh* mesh);
         bool Tema1::IsSpotOcupied(glm::vec2 center);
         void Tema1::RemoveObject(const std::string& objName);

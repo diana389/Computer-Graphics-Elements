@@ -485,7 +485,7 @@ void Tema1::Update(float deltaTimeSeconds)
 
 		// rescale if the object is being destroyed
 		if (obj.isBeingDestroyed)
-			obj.scale -= 0.8 * deltaTimeSeconds;
+			obj.scale -= 1.5f * deltaTimeSeconds;
 
 		// remove the object
 		if (obj.scale < 0)
@@ -524,7 +524,7 @@ void Tema1::FrameEnd()
 }
 
 
-bool Tema1::CheckClick(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size)
+bool Tema1::MouseHover(int mouseX, int mouseY, glm::vec2 center, glm::vec2 size)
 {
 	if (mouseX < (center.x - size.x / 2.f))
 		return false;
@@ -641,7 +641,8 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 	mouseY = window->GetResolution().y - mouseY;
 
 	// Add mouse button press event
-	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+	// left click
+	if (button == GLFW_MOUSE_BUTTON_2) {
 		std::cout << "Mouse clicked at " << mouseX << ", " << mouseY << endl;
 
 		// check if a star can be collected
@@ -650,7 +651,7 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 			GameObject& obj = pair.second;
 
 			// check if the mouse is over the object
-			if (CheckClick(mouseX, mouseY, obj.center, obj.size))
+			if (MouseHover(mouseX, mouseY, obj.center, obj.size))
 			{
 				// check if the object can be clicked
 				if (obj.isClickable)
@@ -669,22 +670,14 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 			}
 		}
 
-		// check if a cannon can be dragged or clicked
+		// check if a cannon can be dragged
 		for (auto& pair : gameObjects) {
 			const std::string& objName = pair.first;
 			GameObject& obj = pair.second;
 
 			// check if the mouse is over the object
-			if (CheckClick(mouseX, mouseY, obj.center, obj.size))
+			if (MouseHover(mouseX, mouseY, obj.center, obj.size))
 			{
-				// check if the object can be clicked
-				if (obj.isClickable)
-				{
-					// remove the cannon from the line map
-					RemoveObject(objName);
-					break;
-				}
-
 				// the object is not clickable or draggable
 				if (!obj.isDraggable)
 					continue;
@@ -697,12 +690,28 @@ void Tema1::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 				return;
 			}
 		}
+	}
 
-		// remove the object from maps
-		for (const std::string& objname : objectsToRemove)
-			gameObjects.erase(objname);
+	// right click
+	if (button == GLFW_MOUSE_BUTTON_3)
+	{
+		// check if a cannon can be clicked
+		for (auto& pair : gameObjects) {
+			const std::string& objName = pair.first;
+			GameObject& obj = pair.second;
 
-		printLines();
+			// check if the mouse is over the object
+			if (MouseHover(mouseX, mouseY, obj.center, obj.size))
+			{
+				// check if the object can be clicked
+				if (obj.isClickable)
+				{
+					// begin animation
+					obj.isBeingDestroyed = true;
+					return;
+				}
+			}
+		}
 	}
 }
 
@@ -712,7 +721,8 @@ void Tema1::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 	mouseY = window->GetResolution().y - mouseY;
 
 	// Add mouse button release event
-	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+	// left click
+	if (button == GLFW_MOUSE_BUTTON_2) {
 		for (auto& pair : gameObjects) {
 			const std::string& objName = pair.first;
 			GameObject& obj = pair.second;
