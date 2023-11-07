@@ -467,7 +467,7 @@ void Tema1::Update(float deltaTimeSeconds)
 		if (objName.compare(0, 13, "launched_star") == 0)
 		{
 			obj.center.x += 200 * deltaTimeSeconds;
-			angularStep -= 3 * deltaTimeSeconds;
+			angularStep -= 4 * deltaTimeSeconds;
 
 			modelMatrix *= transform2D::Translate(obj.center.x, obj.center.y);
 			modelMatrix *= transform2D::Rotate(angularStep);
@@ -511,7 +511,7 @@ void Tema1::Update(float deltaTimeSeconds)
 	if (lives < 0)
 		exit(1);
 
-	time++;
+	time += 100 * deltaTimeSeconds;
 	Shoot();
 	GenerateStars();
 	GenerateEnemies();
