@@ -22,11 +22,11 @@ Mesh* object2D::CreateRectangle(
         VertexFormat(center + glm::vec3(-width / 2.f , height / 2.f , 0), color)
     };
 
-    Mesh* square = new Mesh(name);
+    Mesh* rect = new Mesh(name);
     std::vector<unsigned int> indices = { 0, 1, 2, 3 };
 
     if (!fill) {
-        square->SetDrawMode(GL_LINE_LOOP);
+        rect->SetDrawMode(GL_LINE_LOOP);
     }
     else {
         // Draw 2 triangles. Add the remaining 2 indices
@@ -34,24 +34,24 @@ Mesh* object2D::CreateRectangle(
         indices.push_back(2);
     }
 
-    square->InitFromData(vertices, indices);
-    return square;
+    rect->InitFromData(vertices, indices);
+    return rect;
 }
 
 Mesh* object2D::CreateSquare(
     const std::string &name,
     glm::vec3 center,
-    float length,
+    float size,
     glm::vec3 color,
     bool fill)
 {
 
     std::vector<VertexFormat> vertices =
     {
-        VertexFormat(center + glm::vec3(-length / 2.f , -length / 2.f , 0), color),
-        VertexFormat(center + glm::vec3(length / 2.f, -length / 2.f , 0), color),
-        VertexFormat(center + glm::vec3(length / 2.f , length / 2.f , 0), color),
-        VertexFormat(center + glm::vec3(-length / 2.f , length / 2.f , 0), color)
+        VertexFormat(center + glm::vec3(-size / 2.f , -size / 2.f , 0), color),
+        VertexFormat(center + glm::vec3(size / 2.f, -size / 2.f , 0), color),
+        VertexFormat(center + glm::vec3(size / 2.f , size / 2.f , 0), color),
+        VertexFormat(center + glm::vec3(-size / 2.f , size / 2.f , 0), color)
     };
 
     Mesh* square = new Mesh(name);
@@ -72,7 +72,7 @@ Mesh* object2D::CreateSquare(
 Mesh* object2D::CreateHeart(
     const std::string& name,
     glm::vec3 center,
-    float scale,
+    float size,
     glm::vec3 color,
     bool fill)
 {
@@ -80,20 +80,20 @@ Mesh* object2D::CreateHeart(
     std::vector<VertexFormat> vertices;
 
 
-    float x = scale * (0);
-    float y = scale * (-15);
+    float x = size * (0);
+    float y = size * (-15);
     vertices.emplace_back(glm::vec3(center.x + x, center.y + y, center.z), color);
 
     for (float t = 0.0f; t <= 3.0f * glm::pi<float>() / 4.0f; t += 0.01f) {
-        float x = scale * (16 * pow(sin(t), 3));
-        float y = scale * (13 * cos(t) - 5 * cos(2 * t) - 2 * cos(3 * t) - cos(4 * t));
+        float x = size * (16 * pow(sin(t), 3));
+        float y = size * (13 * cos(t) - 5 * cos(2 * t) - 2 * cos(3 * t) - cos(4 * t));
 
         vertices.emplace_back(glm::vec3(center.x + x, center.y + y, center.z), color);
     }
 
     for (float t = 5.0f * glm::pi<float>() / 4.0f; t <= 2 * glm::pi<float>(); t += 0.01f) {
-        float x = scale * (16 * pow(sin(t), 3));
-        float y = scale * (13 * cos(t) - 5 * cos(2 * t) - 2 * cos(3 * t) - cos(4 * t));
+        float x = size * (16 * pow(sin(t), 3));
+        float y = size * (13 * cos(t) - 5 * cos(2 * t) - 2 * cos(3 * t) - cos(4 * t));
 
         vertices.emplace_back(glm::vec3(center.x + x, center.y + y, center.z), color);
     }
@@ -165,25 +165,25 @@ Mesh* object2D::CreateStar(
 Mesh* object2D::CreateCannon(
     const std::string& name,
     glm::vec3 center,
-    float length,
+    float size,
     glm::vec3 color,
     bool fill)
 {
     std::vector<VertexFormat> vertices =
     {
-        VertexFormat(center + glm::vec3(0, length / 2.f, 1), color),
-        VertexFormat(center + glm::vec3(-length / 4.f, 0, 1), color),
-        VertexFormat(center + glm::vec3(length / 4.f, 0, 1), color),
-        VertexFormat(center + glm::vec3(0, -length / 2.f, 1), color),
-        VertexFormat(center + glm::vec3(-length / 4.f, 0, 1), color),
-        VertexFormat(center + glm::vec3(length / 4.f, 0, 1), color),
+        VertexFormat(center + glm::vec3(0, size / 2.f, 1), color),
+        VertexFormat(center + glm::vec3(-size / 4.f, 0, 1), color),
+        VertexFormat(center + glm::vec3(size / 4.f, 0, 1), color),
+        VertexFormat(center + glm::vec3(0, -size / 2.f, 1), color),
+        VertexFormat(center + glm::vec3(-size / 4.f, 0, 1), color),
+        VertexFormat(center + glm::vec3(size / 4.f, 0, 1), color),
 
-        VertexFormat(center + glm::vec3(0, length / 8.f, 1), color),
-        VertexFormat(center + glm::vec3(0, -length / 8.f, 1), color),
-        VertexFormat(center + glm::vec3(length / 2.f, length / 8.f, 1), color),
-        VertexFormat(center + glm::vec3(0, -length / 8.f, 1), color),
-        VertexFormat(center + glm::vec3(length / 2.f, length / 8.f, 1), color),
-        VertexFormat(center + glm::vec3(length / 2.f, -length / 8.f, 1), color)
+        VertexFormat(center + glm::vec3(0, size / 8.f, 1), color),
+        VertexFormat(center + glm::vec3(0, -size / 8.f, 1), color),
+        VertexFormat(center + glm::vec3(size / 2.f, size / 8.f, 1), color),
+        VertexFormat(center + glm::vec3(0, -size / 8.f, 1), color),
+        VertexFormat(center + glm::vec3(size / 2.f, size / 8.f, 1), color),
+        VertexFormat(center + glm::vec3(size / 2.f, -size / 8.f, 1), color)
     };
 
     Mesh* cannon = new Mesh(name);

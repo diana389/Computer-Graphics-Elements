@@ -12,6 +12,7 @@ namespace m1
 
         void Init() override;
 
+        // Struct to store the game objects
         struct GameObject {
             glm::vec2 center;
             glm::vec2 size;
@@ -21,7 +22,7 @@ namespace m1
             bool isClickable = false;
             Mesh* mesh;
             glm::vec3 color = glm::vec3(1, 1, 1);
-            int strength;
+            int strength = 1;
             bool isBeingDestroyed = false;
             float scale = 1;
 
@@ -38,7 +39,8 @@ namespace m1
             }
         };
 
-        // derived class
+        // Structs for each type of object
+
         struct Cannon : GameObject
         {
             Cannon::Cannon(glm::vec2 center, glm::vec2 size, Mesh* mesh, glm::vec3 color)
@@ -46,7 +48,7 @@ namespace m1
                 this->center = center;
                 this->size = size;
                 this->mesh = mesh;
-                this->isDraggable = true;
+                this->isDraggable = true; // can be dragged
                 this->color = color;
             }
         };
@@ -58,7 +60,7 @@ namespace m1
                 this->center = center;
                 this->size = size;
                 this->mesh = mesh;
-                this->isClickable = true;
+                this->isClickable = true; // can be clicked
             }
         };
 
@@ -85,7 +87,7 @@ namespace m1
                 this->center = center;
                 this->size = size;
                 this->mesh = mesh;
-                this->canPlaceObject = true;
+                this->canPlaceObject = true; // a cannon can be placed here
             }
         };
 
@@ -97,14 +99,14 @@ namespace m1
                 this->size = size;
                 this->mesh = mesh;
                 this->color = color;
-                this->strength = 3;
+                this->strength = 3; // 3 hits to destroy
             }
         };
 
         struct Line
         {
-            std::unordered_map<std::string, GameObject> cannons;
-            std::unordered_map<std::string, GameObject> enemies;
+            std::unordered_map<std::string, GameObject> cannons; // cannons on the line
+            std::unordered_map<std::string, GameObject> enemies; // enemies on the line
         };
 
         struct ViewportSpace
@@ -143,7 +145,6 @@ namespace m1
         void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
         void OnWindowResize(int width, int height) override;
         bool Tema1::CheckCollision(glm::vec2 center1, glm::vec2 size1, glm::vec2 center2, glm::vec2 size2);
-        void Tema1::printLines();
         void Tema1::Shoot();
         void Tema1::GenerateStars();
         void Tema1::GenerateEnemies();
@@ -156,19 +157,22 @@ namespace m1
 
     protected:
 
-        std::unordered_map<std::string, GameObject> gameObjects;
-        std::vector<std::string> objectsToRemove;
+        std::unordered_map<std::string, GameObject> gameObjects; // all the game objects
+        std::vector<std::string> objectsToRemove; // objects to be removed from the game
         GameObject obj;
 
-        Line lines[3];
+        Line lines[3]; // the 3 lines
 
-        glm::mat3 modelMatrix;
+        glm::mat3 modelMatrix = glm::mat3(1);
         float angularStep = 0;
 
         int lives = 3;
         int starsCount = 0; 
         int starsCollected = 6;
-        int time = 0;
+        float time = 0;
+        float timeToShoot = 0;
+        float timeToGenerateStars = 0;
+		float timeToGenerateEnemies = 0;
         int cannonID = 0;
         int enemyID = 0;
         int starsLaunched = 0;
