@@ -17,13 +17,60 @@ uniform float material_kd;
 uniform float material_ks;
 uniform int material_shininess;
 uniform vec3 object_color;
+uniform int damage;
+uniform int component;
 
 // Output
 out vec3 color;
+flat out int damage_out;
 
 void main()
 {
-    vec3 world_position = vec3(Model * vec4(v_position, 1.0));
+	vec3 v_pos = v_position;
+
+    switch(damage)
+	{
+		case 1:
+			switch(component)
+			{
+				case 1: // rails
+					if(v_pos.x == -0.6)
+						v_pos = vec3(0, 0, 0);
+					break;
+				case 2: // body
+					color = vec3(1.0, 0.0, 0.0);
+					break;
+				case 3: // turret
+					if(v_pos.y > 0.48 && v_pos.x < -0.13)
+						v_pos = vec3(v_pos.x, 0.43, v_pos.z);
+					break;
+				case 4:  // gun
+					if(v_pos.x > 0)
+						v_pos = vec3(0, v_pos.y, v_pos.z);
+					break;
+			}
+			break;
+		case 2:
+			switch(component)
+			{
+				case 1: // rails
+					color = vec3(1.0, 1.0, 0.0);
+					break;
+				case 2: // body
+					color = vec3(1.0, 0.0, 0.0);
+					break;
+				case 3: // turret
+					if(v_pos.y > 0.43 && v_pos.x < 0.13)
+						v_pos = vec3(v_pos.x, 0.41, v_pos.z);
+					break;
+				case 4:  // gun
+					color = vec3(0.0, 0.0, 0.0);
+					break;
+			}
+			break;
+	}
+
+    vec3 world_position = vec3(Model * vec4(v_pos, 1.0));
     vec3 world_normal = normalize(vec3(Model * vec4(v_normal, 0.0)));
     vec3 L = normalize(light_position - world_position);
     vec3 V = normalize(eye_position - world_position);
@@ -45,7 +92,8 @@ void main()
     float light = ambient_light + diffuse_light + specular_light;
 
     color = object_color * light;
+    damage_out = damage;
 
     // Compute gl_Position
-    gl_Position = Projection * View * Model * vec4(v_position, 1.0);
+    gl_Position = Projection * View * Model * vec4(v_pos, 1.0);
 }

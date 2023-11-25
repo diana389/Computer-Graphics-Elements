@@ -4,14 +4,19 @@
 // TODO(student): Get values from vertex shader
 
 in vec3 color;
+flat in int damage_out;
 
 // Output
 layout(location = 0) out vec4 out_color;
 
 void main()
 {
-    // TODO(student): Write pixel out color
-    // out_color = vec4(frag_color, 1);
-    out_color = vec4(color, 1);
-
+    if(damage_out > 0)
+	{
+        float darkening_factor = 0.8f / damage_out;
+		out_color = vec4(color * darkening_factor, 1);
+	}
+    else 
+        out_color = vec4(color, 1);
+    
 }

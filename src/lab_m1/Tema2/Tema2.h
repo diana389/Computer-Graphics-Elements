@@ -38,7 +38,22 @@ namespace m1
 			GameObject tank_body;
 			GameObject tank_turret;
 			GameObject tank_gun;
+            int damage = 0;
 		};
+
+        struct Building
+        {
+			Building() : mesh(nullptr), position(glm::vec3(0)) {}
+			Building(Mesh* mesh, glm::vec3 position)
+				: mesh(mesh), position(position) {}
+			Building(Mesh* mesh, glm::vec3 position, float length, float width)
+				: mesh(mesh), position(position), length(length), width(width) {}
+
+			Mesh* mesh;
+			glm::vec3 position;
+            float length = 0;
+            float width = 0;
+		};  
 
         struct ViewportArea
         {
@@ -63,7 +78,7 @@ namespace m1
         void Update(float deltaTimeSeconds) override;
         void FrameEnd() override;
 
-        void RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix);
+        void RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, bool isMyTank = false, int damage = 0);
 
         void OnInputUpdate(float deltaTime, int mods) override;
         void OnKeyPress(int key, int mods) override;
@@ -77,22 +92,31 @@ namespace m1
         void Tema2::MoveTankForward(Tank& tank, glm::vec3 forward, float distance);
         void Tema2::RotateTank(Tank& tank, float angle);
         void Tema2::RotateObject(glm::mat4& modelMatrix, glm::vec3& position, glm::vec3& forward, float angle);
+        bool Tema2::CheckTankProjectileCollision(Tank& tank, GameObject& projectile);
+        void Tema2::CheckTankBuildingCollision(Tank& tank, Building building);
     protected:
         implemented::MyCamera* camera;
         bool renderCameraTarget;
+
+        std::unordered_map<std::string, Building> buildings;
 
         std::unordered_map<std::string, GameObject> projectiles;
         std::unordered_map<std::string, GameObject> objectsToBeRemoved;
         GameObject tank_rails, tank_body, tank_turret, tank_gun;
 
         Tank tank = Tank(tank_rails, tank_body, tank_turret, tank_gun);
-        std::vector<Tank> enemies;
+        std::unordered_map<std::string, Tank> enemies;
+        std::unordered_map<std::string, Tank> enemiesToBeRemoved;
 
         glm::vec3 tankPosition = glm::vec3(0, 0, 0);
         bool up = false;
         float tankAngle = 0;
 
+        float old_angle_mouse = 0;
+        float angle_mouse = 0;
+
         int projectileID = 0;
+        int enemyID = 0;
 
         glm::mat4 modelMatrix;
         glm::mat4 modelMatrixTank;
@@ -109,6 +133,9 @@ namespace m1
         unsigned int materialShininess = 30;
         float materialKd = 0.5;
         float materialKs = 0.5;
+
+
         glm::vec3& color = glm::vec3(1, 0, 0); // red
+
     };
 }   // namespace m1
