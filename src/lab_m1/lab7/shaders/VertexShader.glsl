@@ -17,6 +17,8 @@ uniform float material_kd;
 uniform float material_ks;
 uniform int material_shininess;
 
+uniform vec3 light_position2;
+
 uniform vec3 object_color;
 
 // Output value to fragment shader
@@ -26,12 +28,16 @@ out vec3 color;
 void main()
 {
     // TODO(student): Compute world space vectors
+    vec3 world_position = vec3(Model * vec4(v_position, 1.0));
+    vec3 world_normal = normalize(vec3(Model * vec4(v_normal, 0.0)));
+    vec3 L = normalize(light_position - world_position);
+    vec3 V = normalize(eye_position - world_position);
 
     // TODO(student): Define ambient light component
-    float ambient_light = 0.25;
+    float ambient_light = material_kd * 0.25;
 
     // TODO(student): Compute diffuse light component
-    float diffuse_light = 0;
+    float diffuse_light = material_kd * max(dot(world_normal, L), 0.0);
 
     // TODO(student): Compute specular light component
     float specular_light = 0;
@@ -43,13 +49,43 @@ void main()
     // method, which we'll use in the future. Don't mix them up!
     if (diffuse_light > 0)
     {
-
+        specular_light = material_ks * object_color.r * pow(max(dot(world_normal, normalize(L + V)), 0.0), material_shininess);
     }
 
+    float dist = length(light_position - world_position);
+    float att = 1.0 / (dist * dist);
+
     // TODO(student): Compute light
+    float light = ambient_light + att * (diffuse_light + specular_light);
+
+    /////////////////////////////////////////////////////////////////////////
+
+    world_position = vec3(Model * vec4(v_position, 1.0));
+    world_normal = normalize(vec3(Model * vec4(v_normal, 0.0)));
+    L = normalize(light_position2 - world_position);
+    V = normalize(eye_position - world_position);
+
+    ambient_light = material_kd * 0.25;
+
+    diffuse_light = material_kd * max(dot(world_normal, L), 0.0);
+
+    specular_light = 0;
+
+    if (diffuse_light > 0)
+    {
+        specular_light = material_ks * object_color.r * pow(max(dot(world_normal, normalize(L + V)), 0.0), material_shininess);
+    }
+
+    dist = length(light_position2 - world_position);
+    att = 1.0 / (dist * dist);
+
+    float light2 = ambient_light + att * (diffuse_light + specular_light);
+
+    /////////////////////////////////////////////////////////////////////
 
     // TODO(student): Send color light output to fragment shader
-    color = vec3(1);
+    color = light * object_color + light2 * object_color;
 
     gl_Position = Projection * View * Model * vec4(v_position, 1.0);
+
 }

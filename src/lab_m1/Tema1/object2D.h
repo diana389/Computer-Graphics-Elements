@@ -6,7 +6,7 @@
 #include "utils/glm_utils.h"
 
 
-namespace object2D
+namespace Object2D
 {
     Mesh* CreateRectangle(const std::string& name, glm::vec3 center, float width, float height, glm::vec3 color, bool fill = false);
     Mesh* CreateSquare(const std::string &name, glm::vec3 center, float size, glm::vec3 color, bool fill = false);

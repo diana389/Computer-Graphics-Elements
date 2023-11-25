@@ -56,6 +56,7 @@ void Lab7::Init()
     // Light & material properties
     {
         lightPosition = glm::vec3(0, 1, 1);
+        lightPosition2 = glm::vec3(-1, 1, 1);
         materialShininess = 30;
         materialKd = 0.5;
         materialKs = 0.5;
@@ -113,6 +114,14 @@ void Lab7::Update(float deltaTimeSeconds)
         modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
         RenderMesh(meshes["sphere"], shaders["Simple"], modelMatrix);
     }
+
+    // Render the second point light in the scene
+    {
+        glm::mat4 modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, lightPosition2);
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
+        RenderMesh(meshes["sphere"], shaders["Simple"], modelMatrix);
+    }
 }
 
 
@@ -132,11 +141,31 @@ void Lab7::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & modelM
 
     // Set shader uniforms for light & material properties
     // TODO(student): Set light position uniform
+    glUniform3fv(glGetUniformLocation(shader->program, "light_position"), 1, glm::value_ptr(lightPosition));
+
+    // BONUS: extra light source
+    glUniform3fv(glGetUniformLocation(shader->program, "light_position2"), 1, glm::value_ptr(lightPosition2));
 
     glm::vec3 eyePosition = GetSceneCamera()->m_transform->GetWorldPosition();
     // TODO(student): Set eye position (camera position) uniform
+    glUniform3fv(glGetUniformLocation(shader->program, "eye_position"), 1, glm::value_ptr(eyePosition));
 
     // TODO(student): Set material property uniforms (shininess, kd, ks, object color)
+    glUniform1i(glGetUniformLocation(shader->program, "material_shininess"), materialShininess);
+    glUniform1f(glGetUniformLocation(shader->program, "material_kd"), materialKd);
+    glUniform1f(glGetUniformLocation(shader->program, "material_ks"), materialKs);
+
+    // Set colorSphere to red
+    glm::vec3 &colorSphere = glm::vec3(1, 0, 0); // red
+    // Set colorPlane to dark grey
+    glm::vec3 &colorPlane = glm::vec3(0.2, 0.2, 0.2); // dark grey
+
+    if (mesh == meshes["sphere"])
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorSphere));
+    else if (mesh == meshes["plane"])
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorPlane));
+    else
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(color));
 
     // Bind model matrix
     GLint loc_model_matrix = glGetUniformLocation(shader->program, "Model");

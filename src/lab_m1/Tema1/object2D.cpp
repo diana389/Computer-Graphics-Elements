@@ -1,11 +1,11 @@
-#include "object2D.h"
+#include "Object2D.h"
 
 #include <vector>
 
 #include "core/engine.h"
 #include "utils/gl_utils.h"
 
-Mesh* object2D::CreateRectangle(
+Mesh* Object2D::CreateRectangle(
     const std::string& name,
     glm::vec3 center,
     float width,
@@ -38,7 +38,7 @@ Mesh* object2D::CreateRectangle(
     return rect;
 }
 
-Mesh* object2D::CreateSquare(
+Mesh* Object2D::CreateSquare(
     const std::string &name,
     glm::vec3 center,
     float size,
@@ -69,7 +69,7 @@ Mesh* object2D::CreateSquare(
     return square;
 }
 
-Mesh* object2D::CreateHeart(
+Mesh* Object2D::CreateHeart(
     const std::string& name,
     glm::vec3 center,
     float size,
@@ -118,7 +118,7 @@ Mesh* object2D::CreateHeart(
 
 }
 
-Mesh* object2D::CreateStar(
+Mesh* Object2D::CreateStar(
     const std::string& name,
     glm::vec3 center,
     float scale,
@@ -162,7 +162,7 @@ Mesh* object2D::CreateStar(
     return star;
 }
 
-Mesh* object2D::CreateCannon(
+Mesh* Object2D::CreateCannon(
     const std::string& name,
     glm::vec3 center,
     float size,
@@ -204,7 +204,7 @@ Mesh* object2D::CreateCannon(
     return cannon;
 }
 
-Mesh* object2D::CreateEnemy(
+Mesh* Object2D::CreateEnemy(
     const std::string& name,
     glm::vec3 center,
     float size,

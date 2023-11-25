@@ -3,8 +3,8 @@
 #include <vector>
 #include <iostream>
 
-#include "lab_m1/Tema1/transform2D.h"
-#include "lab_m1/Tema1/object2D.h"
+#include "lab_m1/Tema1/Transform2D.h"
+#include "lab_m1/Tema1/Object2D.h"
 
 using namespace std;
 using namespace m1;
@@ -32,11 +32,11 @@ void Tema1::Init()
 	glm::vec3 corner = glm::vec3(0, 0, 0);
 
 	// RECTANGLE
-	Mesh* rect = object2D::CreateRectangle("rect", corner, 100, 400, jordyBlue, true);
+	Mesh* rect = Object2D::CreateRectangle("rect", corner, 100, 400, jordyBlue, true);
 	AddMeshToList(rect);
 
 	// GREEN SQUARES
-	Mesh* square = object2D::CreateSquare("square", corner, 100, lightGreen, true);
+	Mesh* square = Object2D::CreateSquare("square", corner, 100, lightGreen, true);
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
 		{
@@ -47,7 +47,7 @@ void Tema1::Init()
 		}
 
 	// RED HEARTS
-	Mesh* heart = object2D::CreateHeart("heart", corner, 3, red, true);
+	Mesh* heart = Object2D::CreateHeart("heart", corner, 3, red, true);
 	for (int i = 0; i < lives; i++)
 	{
 		std::string name = "heart" + std::to_string(i);
@@ -57,40 +57,40 @@ void Tema1::Init()
 	}
 
 	// CANNON OUTLINE
-	Mesh* cannon_outline = object2D::CreateSquare("cannon_outline", corner, 150, white, false);
+	Mesh* cannon_outline = Object2D::CreateSquare("cannon_outline", corner, 150, white, false);
 	AddMeshToList(cannon_outline);
 
 	// PINK STAR
-	Mesh* star = object2D::CreateStar("star", glm::vec3(0, 0, 5), 60, lavanderPink, true);
+	Mesh* star = Object2D::CreateStar("star", glm::vec3(0, 0, 5), 60, lavanderPink, true);
 	AddMeshToList(star);
 
 	// CANNONS TO PICK
 	// orange cannon
-	Mesh* cannon_orange = object2D::CreateCannon("cannon_orange", corner, 100, orange, true);
+	Mesh* cannon_orange = Object2D::CreateCannon("cannon_orange", corner, 100, orange, true);
 	AddMeshToList(cannon_orange);
 	obj = Cannon(glm::vec2(100, 625), glm::vec2(100, 100), cannon_orange, orange);
 	gameObjects["cannon_orange"] = obj;
 
 	// blue cannon
-	Mesh* cannon_blue = object2D::CreateCannon("cannon_blue", corner, 100, blue, true);
+	Mesh* cannon_blue = Object2D::CreateCannon("cannon_blue", corner, 100, blue, true);
 	AddMeshToList(cannon_blue);
 	obj = Cannon(glm::vec2(300, 625), glm::vec2(100, 100), cannon_blue, blue);
 	gameObjects["cannon_blue"] = obj;
 
 	// yellow cannon
-	Mesh* cannon_yellow = object2D::CreateCannon("cannon_yellow", corner, 100, yellow, true);
+	Mesh* cannon_yellow = Object2D::CreateCannon("cannon_yellow", corner, 100, yellow, true);
 	AddMeshToList(cannon_yellow);
 	obj = Cannon(glm::vec2(500, 625), glm::vec2(100, 100), cannon_yellow, yellow);
 	gameObjects["cannon_yellow"] = obj;
 
 	// purple cannon
-	Mesh* cannon_purple = object2D::CreateCannon("cannon_purple", corner, 100, purple, true);
+	Mesh* cannon_purple = Object2D::CreateCannon("cannon_purple", corner, 100, purple, true);
 	AddMeshToList(cannon_purple);
 	obj = Cannon(glm::vec2(700, 625), glm::vec2(100, 100), cannon_purple, purple);
 	gameObjects["cannon_purple"] = obj;
 
 	// GREY STARS
-	Mesh* star_grey = object2D::CreateStar("star_grey", glm::vec3(0, 0, 0), 40, lightGray, true);
+	Mesh* star_grey = Object2D::CreateStar("star_grey", glm::vec3(0, 0, 0), 40, lightGray, true);
 	AddMeshToList(star_grey);
 	for (int i = 0; i < starsCollected; i++)
 	{
@@ -99,33 +99,33 @@ void Tema1::Init()
 	}
 
 	// LAUNCHED STARS
-	Mesh* launched_star_orange = object2D::CreateStar("launched_star_orange", glm::vec3(0, 0, 4), 40, orange, true);
+	Mesh* launched_star_orange = Object2D::CreateStar("launched_star_orange", glm::vec3(0, 0, 4), 40, orange, true);
 	AddMeshToList(launched_star_orange);
 
-	Mesh* launched_star_blue = object2D::CreateStar("launched_star_blue", glm::vec3(0, 0, 4), 40, blue, true);
+	Mesh* launched_star_blue = Object2D::CreateStar("launched_star_blue", glm::vec3(0, 0, 4), 40, blue, true);
 	AddMeshToList(launched_star_blue);
 
-	Mesh* launched_star_yellow = object2D::CreateStar("launched_star_yellow", glm::vec3(0, 0, 4), 40, yellow, true);
+	Mesh* launched_star_yellow = Object2D::CreateStar("launched_star_yellow", glm::vec3(0, 0, 4), 40, yellow, true);
 	AddMeshToList(launched_star_yellow);
 
-	Mesh* launched_star_purple = object2D::CreateStar("launched_star_purple", glm::vec3(0, 0, 4), 40, purple, true);
+	Mesh* launched_star_purple = Object2D::CreateStar("launched_star_purple", glm::vec3(0, 0, 4), 40, purple, true);
 	AddMeshToList(launched_star_purple);
 
 	// ENEMIES
 	// purple enemy
-	Mesh* enemy_purple = object2D::CreateEnemy("enemy_purple", corner, 50, purple, coolGray, true);
+	Mesh* enemy_purple = Object2D::CreateEnemy("enemy_purple", corner, 50, purple, coolGray, true);
 	AddMeshToList(enemy_purple);
 
 	// blue enemy
-	Mesh* enemy_blue = object2D::CreateEnemy("enemy_blue", corner, 50, blue, jordyBlue, true);
+	Mesh* enemy_blue = Object2D::CreateEnemy("enemy_blue", corner, 50, blue, jordyBlue, true);
 	AddMeshToList(enemy_blue);
 
 	// yellow enemy
-	Mesh* enemy_yellow = object2D::CreateEnemy("enemy_yellow", corner, 50, yellow, lightGreen, true);
+	Mesh* enemy_yellow = Object2D::CreateEnemy("enemy_yellow", corner, 50, yellow, lightGreen, true);
 	AddMeshToList(enemy_yellow);
 
 	// orange enemy
-	Mesh* enemy_orange = object2D::CreateEnemy("enemy_orange", corner, 50, orange, hunyadiYellow, true);
+	Mesh* enemy_orange = Object2D::CreateEnemy("enemy_orange", corner, 50, orange, hunyadiYellow, true);
 	AddMeshToList(enemy_orange);
 }
 

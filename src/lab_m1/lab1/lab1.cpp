@@ -37,7 +37,11 @@ void Lab1::Init()
 
     // TODO(student): Load some more meshes. The value of RESOURCE_PATH::MODELS
     // is actually a path on disk, go there and you will find more meshes.
-
+    {
+        Mesh* mesh = new Mesh("tank");
+        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "tank.obj");
+        meshes[mesh->GetMeshID()] = mesh;
+    }
 }
 
 
@@ -73,7 +77,7 @@ void Lab1::Update(float deltaTimeSeconds)
     // was previously loaded. We do this using `RenderMesh`. Check the
     // signature of this function to see the meaning of its parameters.
     // You can draw the same mesh any number of times.
-
+    RenderMesh(meshes["tank"], glm::vec3(0, 0.5f, 0), glm::vec3(0.5f));
 }
 
 

@@ -31,6 +31,7 @@ namespace m1
         void OnWindowResize(int width, int height) override;
 
         glm::vec3 lightPosition;
+        glm::vec3 lightPosition2;
         unsigned int materialShininess;
         float materialKd;
         float materialKs;
