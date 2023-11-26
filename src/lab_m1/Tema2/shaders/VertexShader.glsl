@@ -33,38 +33,34 @@ void main()
 		case 1:
 			switch(component)
 			{
-				case 1: // rails
-					if(v_pos.x == -0.6)
-						v_pos = vec3(0, 0, 0);
-					break;
 				case 2: // body
-					color = vec3(1.0, 0.0, 0.0);
+					if(v_pos.x > 0.38)
+						v_pos = vec3(0.3, v_pos.y, v_pos.z);
 					break;
 				case 3: // turret
 					if(v_pos.y > 0.48 && v_pos.x < -0.13)
 						v_pos = vec3(v_pos.x, 0.43, v_pos.z);
 					break;
 				case 4:  // gun
-					if(v_pos.x > 0)
-						v_pos = vec3(0, v_pos.y, v_pos.z);
+					if(v_pos.z > 0.9)
+						v_pos = vec3(v_pos.x, v_pos.y, 0.9);
 					break;
 			}
 			break;
 		case 2:
 			switch(component)
 			{
-				case 1: // rails
-					color = vec3(1.0, 1.0, 0.0);
-					break;
 				case 2: // body
-					color = vec3(1.0, 0.0, 0.0);
+					if(v_pos.x > 0.38)
+						v_pos = vec3(0.1, v_pos.y, v_pos.z);
 					break;
 				case 3: // turret
 					if(v_pos.y > 0.43 && v_pos.x < 0.13)
 						v_pos = vec3(v_pos.x, 0.41, v_pos.z);
 					break;
 				case 4:  // gun
-					color = vec3(0.0, 0.0, 0.0);
+					if(v_pos.z > 0.8)
+						v_pos = vec3(v_pos.x, v_pos.y, 0.8);
 					break;
 			}
 			break;

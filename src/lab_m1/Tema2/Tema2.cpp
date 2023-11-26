@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 using namespace std;
 using namespace m1;
@@ -36,12 +38,12 @@ void Tema2::Init()
         meshes[mesh->GetMeshID()] = mesh;
     }
 
-    {
-        Mesh* mesh = new Mesh("building1");
-		mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building1.obj");
-		meshes[mesh->GetMeshID()] = mesh;
-        buildings["building1"] = Building(mesh, glm::vec3(-10, 0, 4), 2.f, 2.f);
-    }
+  //  {
+  //      Mesh* mesh = new Mesh("building1");
+		//mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building1.obj");
+		//meshes[mesh->GetMeshID()] = mesh;
+  //      buildings["building1"] = Building(mesh, glm::vec3(-10, 0, 4), 2.f, 2.f);
+  //  }
 
     {
         Mesh *mesh = new Mesh("building2");
@@ -50,40 +52,40 @@ void Tema2::Init()
         buildings["building2"] = Building(mesh, glm::vec3(-20, 0, 8), 14.f, 10.f);
     }
 
-    {
-		Mesh *mesh = new Mesh("building3");
-		mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building3.obj");
-		meshes[mesh->GetMeshID()] = mesh;
-		buildings["building3"] = Building(mesh, glm::vec3(5, 0, -12), 6.f, 7.f);
-	}
+ //   {
+	//	Mesh *mesh = new Mesh("building3");
+	//	mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building3.obj");
+	//	meshes[mesh->GetMeshID()] = mesh;
+	//	buildings["building3"] = Building(mesh, glm::vec3(5, 0, -12), 6.f, 7.f);
+	//}
 
-    {
-        Mesh* mesh = new Mesh("building4");
-        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building4.obj");
-        meshes[mesh->GetMeshID()] = mesh;
-        buildings["building4"] = Building(mesh, glm::vec3(20, 0, 16), 2.6f, 2.7f);
-    }
+ //   {
+ //       Mesh* mesh = new Mesh("building4");
+ //       mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building4.obj");
+ //       meshes[mesh->GetMeshID()] = mesh;
+ //       buildings["building4"] = Building(mesh, glm::vec3(20, 0, 16), 2.6f, 2.7f);
+ //   }
 
-    {
-		Mesh *mesh = new Mesh("building5");
-		mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building5.obj");
-		meshes[mesh->GetMeshID()] = mesh;
-		buildings["building5"] = Building(mesh, glm::vec3(-5, 0, 5), 5.f, 5.f);
-	}
+ //   {
+	//	Mesh *mesh = new Mesh("building5");
+	//	mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building5.obj");
+	//	meshes[mesh->GetMeshID()] = mesh;
+	//	buildings["building5"] = Building(mesh, glm::vec3(-5, 0, 5), 5.f, 5.f);
+	//}
 
-    {
-		Mesh *mesh = new Mesh("building6");
-		mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building6.obj");
-		meshes[mesh->GetMeshID()] = mesh;
-		buildings["building6"] = Building(mesh, glm::vec3(10, 0, -20), 12.f, 8.f);
-	}
+ //   {
+	//	Mesh *mesh = new Mesh("building6");
+	//	mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building6.obj");
+	//	meshes[mesh->GetMeshID()] = mesh;
+	//	buildings["building6"] = Building(mesh, glm::vec3(10, 0, -20), 12.f, 8.f);
+	//}
 
-    {
-		Mesh *mesh = new Mesh("building7");
-		mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building7.obj");
-		meshes[mesh->GetMeshID()] = mesh;
-		buildings["building7"] = Building(mesh, glm::vec3(15, 0, 20), 5.f, 5.f);
-	}
+ //   {
+	//	Mesh *mesh = new Mesh("building7");
+	//	mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building7.obj");
+	//	meshes[mesh->GetMeshID()] = mesh;
+	//	buildings["building7"] = Building(mesh, glm::vec3(15, 0, 20), 5.f, 5.f);
+	//}
 
     {
         Mesh* mesh = new Mesh("rails");
@@ -131,7 +133,7 @@ void Tema2::Init()
     {
         glm::mat4 modelMatrix = glm::mat4(1);
         glm::vec3 position = glm::vec3(-3, 0, 5);
-        glm::vec3 forward = glm::vec3(0, 0, -1);
+        glm::vec3 forward = glm::vec3(0, 0, 1);
         modelMatrix = glm::translate(modelMatrix, position);
 
         Tank tank = Tank(GameObject(meshes["rails"], position, forward, modelMatrix),
@@ -145,7 +147,7 @@ void Tema2::Init()
     {
         glm::mat4 modelMatrix = glm::mat4(1);
         glm::vec3 position = glm::vec3(6, 0, 2);
-        glm::vec3 forward = glm::vec3(1, 0, 1);
+        glm::vec3 forward = glm::vec3(0, 0, 1);
         modelMatrix = glm::translate(modelMatrix, position);
 
         Tank tank = Tank(GameObject(meshes["rails"], position, forward, modelMatrix),
@@ -238,7 +240,8 @@ void Tema2::RotateObject(glm::mat4& modelMatrix, glm::vec3& position, glm::vec3&
     translationMatrix = glm::translate(translationMatrix, position);
     modelMatrix = translationMatrix * modelMatrix;
 
-    forward = rotationMatrix * glm::vec4(forward, 1.f);
+    forward = glm::normalize(glm::vec3(glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0, 1, 0)) * glm::vec4(forward, 1.0f)));
+    // forward = glm::normalize(rotationMatrix * glm::vec4(forward, 1.f));
 }
 
 void Tema2::RotateTank(Tank& tank, float angle)
@@ -282,20 +285,53 @@ void Tema2::CheckTankBuildingCollision(Tank& tank, Building building)
 {
     glm::vec3 dif = tank.tank_rails.position - building.position;
 
-    if (abs(dif.x) < building.length / 2 && abs(dif.z) < building.width / 2)
+    if (abs(dif.x) < building.dimOx / 2.f + 0.7f && abs(dif.z) < building.dimOz / 2.f + 0.7f)
     {
-		float p = building.length / 2 - abs(dif.x);
-        glm::vec3 P = glm::normalize(glm::vec3(dif.x, 0, 0)) * p;
+		//float p = building.dimOx / 2 - abs(dif.x);
+  //      glm::vec3 P = glm::normalize(glm::vec3(dif.x, 0, 0)) * p;
 
-        MoveTankForward(tank, P, 0.5f);
-        camera->MoveForward(-p * 0.5f);
+  //      MoveTankForward(tank, P, 0.5f);
+  //      camera->MoveForward(-p * 0.5f);
 
-        p = building.width / 2 - abs(dif.z);
-        P = glm::normalize(glm::vec3(0, 0, dif.z)) * p;
+  //      p = building.dimOz / 2 - abs(dif.z);
+  //      P = glm::normalize(glm::vec3(0, 0, dif.z)) * p;
 
-        MoveTankForward(tank, P, 0.5f);
-        camera->MoveForward(-p * 0.5f);
+  //      MoveTankForward(tank, P, 0.5f);
+  //      camera->MoveForward(-p * 0.5f);
+
+        /////////////////////////////////////////////////////////////////////////////////
+
+        //glm::vec3 P = ((building.dimOx / 2.f + 0.7f) * dif) / abs(dif.x) - dif;
+        //MoveTankForward(tank, P, 1);
+        //camera->MoveForward(-glm::length(P) * 1);
+
+        glm::vec3 P = -glm::normalize(dif) * std::min(building.dimOx / 2.f - abs(dif.x), building.dimOz / 2.f - abs(dif.z));
+        MoveTankForward(tank, P, 1);
+        camera->MoveForward(-glm::length(P) * 1);
 	}
+}
+
+void Tema2::DetectTank(Tank& enemy)
+{
+    float distance = glm::distance(tank.tank_rails.position, enemy.tank_rails.position);
+
+    if (distance < 5)
+    {
+        glm::vec3 new_forward = glm::normalize(tank.tank_body.position - enemy.tank_gun.position);
+        float angle = acos(glm::dot(new_forward, enemy.tank_gun.forward));
+
+        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::vec3 rotatedVector = glm::normalize(glm::vec3(rotationMatrix * glm::vec4(enemy.tank_gun.forward, 1.0f)));
+
+        if (abs(rotatedVector.x - new_forward.x) > 0.01f && abs(rotatedVector.z - new_forward.z) > 0.01f)
+			angle = -angle;
+
+        if(abs(angle) > 0.01f)
+        {       
+            RotateObject(enemy.tank_turret.modelMatrix, enemy.tank_turret.position, enemy.tank_turret.forward, angle);
+            RotateObject(enemy.tank_gun.modelMatrix, enemy.tank_gun.position, enemy.tank_gun.forward, angle);
+        }
+    }
 }
 
 void Tema2::Update(float deltaTimeSeconds)
@@ -316,9 +352,9 @@ void Tema2::Update(float deltaTimeSeconds)
         Tank& enemy = enemy_pair.second;
 
 		RenderSimpleMesh(enemy.tank_rails.mesh, shaders["LabShader"], enemy.tank_rails.modelMatrix, false, enemy.damage);
-		RenderSimpleMesh(enemy.tank_body.mesh, shaders["LabShader"], enemy.tank_rails.modelMatrix, false, enemy.damage);
-		RenderSimpleMesh(enemy.tank_turret.mesh, shaders["LabShader"], enemy.tank_rails.modelMatrix, false, enemy.damage);
-		RenderSimpleMesh(enemy.tank_gun.mesh, shaders["LabShader"], enemy.tank_rails.modelMatrix, false, enemy.damage);
+		RenderSimpleMesh(enemy.tank_body.mesh, shaders["LabShader"], enemy.tank_body.modelMatrix, false, enemy.damage);
+		RenderSimpleMesh(enemy.tank_turret.mesh, shaders["LabShader"], enemy.tank_turret.modelMatrix, false, enemy.damage);
+		RenderSimpleMesh(enemy.tank_gun.mesh, shaders["LabShader"], enemy.tank_gun.modelMatrix, false, enemy.damage);
 	}
 
     {
@@ -350,11 +386,16 @@ void Tema2::Update(float deltaTimeSeconds)
 
     for (auto& enemy_pair : enemies)
     {
+		DetectTank(enemy_pair.second);
+	}
+
+    for (auto& enemy_pair : enemies)
+    {
         Tank& enemy = enemy_pair.second;
         CheckTanksCollision(tank, enemy);
     }
 
- /*   for (auto& tank_pair : enemies)
+    for (auto& tank_pair : enemies)
     {
 		Tank& enemy = tank_pair.second;
         for (auto& building_pair : buildings)
@@ -366,7 +407,7 @@ void Tema2::Update(float deltaTimeSeconds)
     for (auto& building_pair : buildings)
     {
         CheckTankBuildingCollision(tank, building_pair.second);
-    }*/
+    }
 
     for (auto& projectile_pair : projectiles)
     {

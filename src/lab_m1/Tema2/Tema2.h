@@ -46,13 +46,13 @@ namespace m1
 			Building() : mesh(nullptr), position(glm::vec3(0)) {}
 			Building(Mesh* mesh, glm::vec3 position)
 				: mesh(mesh), position(position) {}
-			Building(Mesh* mesh, glm::vec3 position, float length, float width)
-				: mesh(mesh), position(position), length(length), width(width) {}
+			Building(Mesh* mesh, glm::vec3 position, float dimOz, float dimOx)
+				: mesh(mesh), position(position), dimOz(dimOz), dimOx(dimOx) {}
 
 			Mesh* mesh;
 			glm::vec3 position;
-            float length = 0;
-            float width = 0;
+            float dimOz = 0;
+            float dimOx = 0;
 		};  
 
         struct ViewportArea
@@ -94,6 +94,7 @@ namespace m1
         void Tema2::RotateObject(glm::mat4& modelMatrix, glm::vec3& position, glm::vec3& forward, float angle);
         bool Tema2::CheckTankProjectileCollision(Tank& tank, GameObject& projectile);
         void Tema2::CheckTankBuildingCollision(Tank& tank, Building building);
+        void Tema2::DetectTank(Tank& enemy);
     protected:
         implemented::MyCamera* camera;
         bool renderCameraTarget;
