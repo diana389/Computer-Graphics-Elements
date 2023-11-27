@@ -18,14 +18,15 @@ namespace m1
 				: mesh(mesh), position(position), forward(forward), modelMatrix(glm::mat4(1)) {}
             GameObject(Mesh* mesh, glm::vec3 position, glm::vec3 forward, glm::mat4 modelMatrix)
 				: mesh(mesh), position(position), forward(forward), modelMatrix(modelMatrix) {}
-            GameObject(Mesh* mesh, glm::vec3 position, glm::vec3 forward, glm::mat4 modelMatrix, float timeCreated)
-                : mesh(mesh), position(position), forward(forward), modelMatrix(modelMatrix), timeCreated(timeCreated) {}
+            GameObject(Mesh* mesh, glm::vec3 position, glm::vec3 forward, glm::mat4 modelMatrix, float timeCreated, std::string id)
+                : mesh(mesh), position(position), forward(forward), modelMatrix(modelMatrix), timeCreated(timeCreated), id(id) {}
 
 			Mesh* mesh;
 			glm::vec3 position;
             glm::vec3 forward;
             glm::mat4 modelMatrix;
             float timeCreated = 0;
+            std::string id = "";
 		};
 
         struct Tank
@@ -95,6 +96,7 @@ namespace m1
         bool Tema2::CheckTankProjectileCollision(Tank& tank, GameObject& projectile);
         void Tema2::CheckTankBuildingCollision(Tank& tank, Building building);
         void Tema2::DetectTank(Tank& enemy);
+        void Tema2::Shoot(Tank& tank);
     protected:
         implemented::MyCamera* camera;
         bool renderCameraTarget;
@@ -118,6 +120,7 @@ namespace m1
 
         int projectileID = 0;
         int enemyID = 0;
+        float lastEnemyShot = 0;
 
         glm::mat4 modelMatrix;
         glm::mat4 modelMatrixTank;

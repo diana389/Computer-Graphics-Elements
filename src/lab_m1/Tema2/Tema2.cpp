@@ -331,6 +331,13 @@ void Tema2::DetectTank(Tank& enemy)
             RotateObject(enemy.tank_turret.modelMatrix, enemy.tank_turret.position, enemy.tank_turret.forward, angle);
             RotateObject(enemy.tank_gun.modelMatrix, enemy.tank_gun.position, enemy.tank_gun.forward, angle);
         }
+
+        float time = Engine::GetElapsedTime();
+        if (time - lastEnemyShot > 5)
+        {
+			Shoot(enemy);
+			lastEnemyShot = time;
+		}
     }
 }
 
@@ -413,6 +420,9 @@ void Tema2::Update(float deltaTimeSeconds)
     {
         for (auto& enemy_pair : enemies)
         {
+            if(projectile_pair.second.id == enemy_pair.first)
+				continue;
+
             if (CheckTankProjectileCollision(enemy_pair.second, projectile_pair.second))
             {
                 // Remove projectiles that hit tanks
@@ -426,6 +436,23 @@ void Tema2::Update(float deltaTimeSeconds)
 				// Remove tanks that are destroyed
                 enemiesToBeRemoved[enemy_pair.first] = enemy_pair.second;
 			}
+        }
+
+        if (projectile_pair.second.id == "MyTank")
+            continue;
+
+        if (CheckTankProjectileCollision(tank, projectile_pair.second))
+        {
+            // Remove projectiles that hit tanks
+            objectsToBeRemoved[projectile_pair.first] = projectile_pair.second;
+
+            cout << "damage: " << tank.damage << endl;
+        }
+
+        if (tank.damage >= 3)
+        {
+            // Remove tanks that are destroyed
+            cout << "GAME OVER" << endl;
         }
     }
 
@@ -599,36 +626,55 @@ void Tema2::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
     //cout << "angle_mouse: " << angle_mouse << endl;
 }
 
+void Tema2::Shoot(Tank& tank)
+{
+    glm::mat4 modelMatrix = glm::mat4(1);
+
+    //glm::vec3 forward = glm::normalize(glm::vec3(camera->forward.x, 0, camera->forward.z));
+    glm::vec3 forward = tank.tank_gun.forward;
+    glm::vec3 position = glm::vec3(tank.tank_gun.position.x, 0.4f, tank.tank_gun.position.z);
+    modelMatrix = glm::translate(modelMatrix, position);
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
+
+    cout << "position before: " << position.x << " " << position.y << " " << position.z << endl;
+
+    MoveObjForward(modelMatrix, position, forward, 1.f);
+
+
+    cout << modelMatrix[0][0] << " " << modelMatrix[0][1] << " " << modelMatrix[0][2] << endl;
+    cout << modelMatrix[1][0] << " " << modelMatrix[1][1] << " " << modelMatrix[1][2] << endl;
+    cout << modelMatrix[2][0] << " " << modelMatrix[2][1] << " " << modelMatrix[2][2] << endl;
+    cout << modelMatrix[3][0] << " " << modelMatrix[3][1] << " " << modelMatrix[3][2] << endl;
+
+    cout << "position: " << position.x << " " << position.y << " " << position.z << endl;
+    cout << "forward: " << forward.x << " " << forward.y << " " << forward.z << endl;
+    cout << "tank_gun.position: " << tank.tank_gun.position.x << " " << tank.tank_gun.position.y << " " << tank.tank_gun.position.z << endl;
+    cout << "tank_gun.forward: " << tank.tank_gun.forward.x << " " << tank.tank_gun.forward.y << " " << tank.tank_gun.forward.z << endl;
+
+    std::string enemyName = "MyTank";
+
+    for (auto& enemy : enemies)
+    {
+        if (&enemy.second == &tank)
+        {
+			enemyName = enemy.first;
+			
+            break;
+		}
+	}
+
+    cout << "enemyName: " << enemyName << endl;
+
+    projectiles["projectile" + std::to_string(projectileID++)] = GameObject(meshes["projectile"], position, forward, modelMatrix, Engine::GetElapsedTime(), enemyName);
+
+    cout << "timeCreated: " << projectiles["projectile" + std::to_string(projectileID - 1)].timeCreated << endl;
+}
+
 
 void Tema2::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) {
     if (button == GLFW_MOUSE_BUTTON_2)
     {
-        glm::mat4 modelMatrix = glm::mat4(1);
-
-        //glm::vec3 forward = glm::normalize(glm::vec3(camera->forward.x, 0, camera->forward.z));
-        glm::vec3 forward = tank.tank_gun.forward;
-        glm::vec3 position = glm::vec3(tank.tank_gun.position.x, 0.4f, tank.tank_gun.position.z);
-        modelMatrix = glm::translate(modelMatrix, position);
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
-
-        cout << "position before: " << position.x << " " << position.y << " " << position.z << endl;
-
-         MoveObjForward(modelMatrix, position, forward, 1.f);
-
-       
-        cout << modelMatrix[0][0] << " " << modelMatrix[0][1] << " " << modelMatrix[0][2] << endl;
-        cout << modelMatrix[1][0] << " " << modelMatrix[1][1] << " " << modelMatrix[1][2] << endl;
-        cout << modelMatrix[2][0] << " " << modelMatrix[2][1] << " " << modelMatrix[2][2] << endl;
-        cout << modelMatrix[3][0] << " " << modelMatrix[3][1] << " " << modelMatrix[3][2] << endl;
-
-        cout << "position: " << position.x << " " << position.y << " " << position.z << endl;
-        cout << "forward: " << forward.x << " " << forward.y << " " << forward.z << endl;
-        cout << "tank_gun.position: " << tank.tank_gun.position.x << " " << tank.tank_gun.position.y << " " << tank.tank_gun.position.z << endl;
-        cout << "tank_gun.forward: " << tank.tank_gun.forward.x << " " << tank.tank_gun.forward.y << " " << tank.tank_gun.forward.z << endl;
-
-        projectiles["projectile" + std::to_string(projectileID++)] = GameObject(meshes["projectile"], position, forward, modelMatrix, Engine::GetElapsedTime());
-
-        cout << "timeCreated: " << projectiles["projectile" + std::to_string(projectileID - 1)].timeCreated << endl;
+        Shoot(tank);
     }
 }
 
