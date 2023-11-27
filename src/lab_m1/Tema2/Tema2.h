@@ -40,6 +40,8 @@ namespace m1
 			GameObject tank_turret;
 			GameObject tank_gun;
             int damage = 0;
+            int moveType = 0;
+            float timeMoveGenerated = 0;
 		};
 
         struct Building
@@ -97,6 +99,7 @@ namespace m1
         void Tema2::CheckTankBuildingCollision(Tank& tank, Building building);
         void Tema2::DetectTank(Tank& enemy);
         void Tema2::Shoot(Tank& tank);
+        void Tema2::GenerateRandomMove(Tank& tank, float deltaTimeSeconds);
     protected:
         implemented::MyCamera* camera;
         bool renderCameraTarget;

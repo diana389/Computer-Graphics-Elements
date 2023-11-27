@@ -341,6 +341,40 @@ void Tema2::DetectTank(Tank& enemy)
     }
 }
 
+void Tema2::GenerateRandomMove(Tank& tank, float deltaTimeSeconds)
+{
+    if (Engine::GetElapsedTime() - tank.timeMoveGenerated > 4)
+    {
+        tank.moveType = rand() % 4;
+        tank.timeMoveGenerated = Engine::GetElapsedTime();
+    }
+
+    switch (tank.moveType)
+    {
+        case 0:
+        {
+   	    	   MoveTankForward(tank, tank.tank_rails.forward, deltaTimeSeconds * 1.0f);
+   	           break;
+   	    }
+   	    case 1:
+        {
+   	    	   RotateTank(tank, deltaTimeSeconds * 1);
+   	    	   break;
+   	    }
+   	    case 2:
+        {
+   	    	   MoveTankForward(tank, tank.tank_rails.forward, -deltaTimeSeconds * 1.0f);
+   	    	   break;
+   	    }
+   	    case 3:
+        {
+   	    	   RotateTank(tank, -deltaTimeSeconds * 1);
+   	    	   break;
+   	    }
+   
+    }
+}
+
 void Tema2::Update(float deltaTimeSeconds)
 {
     {
@@ -364,9 +398,15 @@ void Tema2::Update(float deltaTimeSeconds)
 		RenderSimpleMesh(enemy.tank_gun.mesh, shaders["LabShader"], enemy.tank_gun.modelMatrix, false, enemy.damage);
 	}
 
+    for (auto& enemy_pair : enemies)
+    {
+		Tank& enemy = enemy_pair.second;
+		GenerateRandomMove(enemy, deltaTimeSeconds);
+	}
+
     {
         glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, -0.15f, 0));
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.1f, 0));
 		RenderSimpleMesh(meshes["plane"], shaders["LabShader"], modelMatrix);
     }
 
@@ -491,6 +531,7 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 
     // Set shader uniforms for light & material properties
     // TODO(student): Set light position uniform
+    glm::vec3 lightPosition = tank.tank_body.position + glm::vec3(0.f, 1.f, 0.f);
     glUniform3fv(glGetUniformLocation(shader->program, "light_position"), 1, glm::value_ptr(lightPosition));
 
     glm::vec3 eyePosition = camera->position;
@@ -504,8 +545,8 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 
     // Set colorSphere to red
     glm::vec3& colorSphere = glm::vec3(1, 0, 0); // red
-    // Set colorPlane to dark grey
-    glm::vec3& colorPlane = glm::vec3(0.2, 0.2, 0.2); // dark grey
+    // Set colorPlane to light grey
+    glm::vec3& colorPlane = glm::vec3(0.8, 0.8, 0.8); // light grey
     glm::vec3& green = glm::vec3(0, 1, 0); // green
 
     if (isMyTank)
