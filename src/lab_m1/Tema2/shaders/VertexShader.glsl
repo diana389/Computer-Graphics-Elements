@@ -9,7 +9,6 @@ layout(location = 2) in vec2 v_texcoord;
 uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
-uniform float Time;
 
 uniform vec3 light_position;
 uniform vec3 eye_position;

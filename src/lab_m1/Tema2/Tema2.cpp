@@ -428,6 +428,17 @@ void Tema2::Update(float deltaTimeSeconds)
             {
 				objectsToBeRemoved[pair.first]= pair.second;
 			}
+
+            // Check building collision
+            for (auto& building_pair : buildings)
+            {
+				glm::vec3 dif = pair.second.position - building_pair.second.position;
+
+                if (abs(dif.x) < building_pair.second.dimOx / 2.f && abs(dif.z) < building_pair.second.dimOz / 2.f)
+                {
+					objectsToBeRemoved[pair.first] = pair.second;
+			    }
+            }
         }
 	}
 
@@ -516,8 +527,7 @@ void Tema2::Update(float deltaTimeSeconds)
 
 void Tema2::FrameEnd()
 {
-    // if(viewMatrix == GetSceneCamera()->GetViewMatrix())
-    DrawCoordinateSystem(camera->GetViewMatrix(), projectionMatrix);
+    // DrawCoordinateSystem(camera->GetViewMatrix(), projectionMatrix);
 }
 
 
@@ -588,10 +598,6 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 
     // Set shader uniform "Projection" to projectionMatrix
     glUniformMatrix4fv(location_projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-
-    // BONUS
-    int location_time = glGetUniformLocation(shader->program, "Time");
-    glUniform1f(location_time, Engine::GetElapsedTime());
 
     // Draw the object
     glBindVertexArray(mesh->GetBuffers()->m_VAO);
