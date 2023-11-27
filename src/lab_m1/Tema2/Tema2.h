@@ -136,13 +136,38 @@ namespace m1
         float top = 10.0f;
         ViewportArea miniViewportArea;
 
-        glm::vec3 lightPosition = glm::vec3(0, 1, 1);
         unsigned int materialShininess = 30;
         float materialKd = 0.5;
         float materialKs = 0.5;
 
+        glm::vec3& olivine = glm::vec3(166 / 255.f, 211 / 255.f, 174 / 255.f); // olivine
+        glm::vec3& asparagus = glm::vec3(103 / 255.f, 141 / 255.f, 88 / 255.f); // asparagus
+        glm::vec3& celadon = glm::vec3(116 / 255.f, 211 / 255.f, 174 / 255.f); // celadon
+        glm::vec3& champagne = glm::vec3(246 / 255.f, 231 / 255.f, 203 / 255.f); // champagne
+        glm::vec3& coralPink = glm::vec3(221 / 255.f, 151 / 255.f, 135 / 255.f); // coral pink
+        glm::vec3& roseQuartz = glm::vec3(173 / 255.f, 168 / 255.f, 190 / 255.f); // Rese Quartz
+        glm::vec3& darkGreen = glm::vec3(13 / 255.f, 40 / 255.f, 24 / 255.f); // dark green
+        glm::vec3& black = glm::vec3(2 / 255.f, 2 / 255.f, 2 / 255.f); // black
+        glm::vec3& bondiBlue = glm::vec3(32 / 255.f, 138 / 255.f, 174 / 255.f); // bondi blue
+        glm::vec3& ghostWhite = glm::vec3(236 / 255.f, 235 / 255.f, 243 / 255.f); // ghost white
+        glm::vec3& lightBlue = glm::vec3(150 / 255.f, 195 / 255.f, 206 / 255.f); // light blue
+        glm::vec3& emerald = glm::vec3(105 / 255.f, 220 / 255.f, 158 / 255.f); // emerald
 
-        glm::vec3& color = glm::vec3(1, 0, 0); // red
+
+        glm::vec3& colorPlane = emerald;
+        glm::vec3& colorTankRails = roseQuartz;
+        glm::vec3& colorTankBody = darkGreen;
+        glm::vec3& colorTankTurret = asparagus;
+        glm::vec3& colorTankGun = roseQuartz;
+        glm::vec3& colorProjectile = bondiBlue;
+        glm::vec3& colorEnemyRails = roseQuartz;
+        glm::vec3& colorEnemyBody = coralPink;
+        glm::vec3& colorEnemyTurret = champagne;
+        glm::vec3& colorEnemyGun = roseQuartz;
+        glm::vec3& colorBuilding = ghostWhite;
+        glm::vec3& colorSky = lightBlue;
+
+        glm::vec3 lightPosition = tank.tank_rails.position + glm::vec3(0.f, 1.f, 0.f);
 
     };
 }   // namespace m1

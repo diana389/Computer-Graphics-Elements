@@ -24,8 +24,8 @@ void Tema2::Init()
     renderCameraTarget = false;
 
     camera = new implemented::MyCamera();
-    glm::vec3 position = glm::vec3(0, 1.3, tankPosition.z + 3);
-    camera->Set(position, normalize(tankPosition + position), glm::vec3(0, 1, 0));
+    glm::vec3 position = glm::vec3(0, 1.3, 3);
+    camera->Set(position, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     projectionMatrix = glm::perspective(RADIANS(60), window->props.aspectRatio, 0.01f, 200.0f);
     viewMatrix = camera->GetViewMatrix();
 
@@ -34,6 +34,12 @@ void Tema2::Init()
 
     {
         Mesh* mesh = new Mesh("plane");
+        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "primitives"), "plane50.obj");
+        meshes[mesh->GetMeshID()] = mesh;
+    }
+
+    {
+        Mesh* mesh = new Mesh("sky");
         mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "primitives"), "plane50.obj");
         meshes[mesh->GetMeshID()] = mesh;
     }
@@ -180,6 +186,12 @@ void Tema2::Init()
         shader->CreateAndLink();
         shaders[shader->GetName()] = shader;
     }
+
+    {
+        Mesh* mesh = new Mesh("sphere");
+        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "primitives"), "sphere.obj");
+        meshes[mesh->GetMeshID()] = mesh;
+    }
 }
 
 
@@ -200,6 +212,59 @@ void Tema2::FrameStart()
         modelMatrix = glm::translate(modelMatrix, pair.second.position);
 		RenderSimpleMesh(pair.second.mesh, shaders["LabShader"], modelMatrix);
 	}
+
+    // Render plane
+    {
+        glm::mat4 modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(0, -0.15f, 0));
+        RenderSimpleMesh(meshes["plane"], shaders["LabShader"], modelMatrix);
+    }
+
+    // Render sky
+    {
+        glm::mat4 modelMatrix = glm::mat4(1);
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 10, 0));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(100, 1, 100));
+		RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+    }
+
+    {
+        glm::mat4 modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 25));
+        modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(1, 0, 0));
+        RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+    }
+
+    {
+        glm::mat4 modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, -25));
+        modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(1, 0, 0));
+        RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+    }
+
+    {
+		glm::mat4 modelMatrix = glm::mat4(1);
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(25, 0, 0));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(0, 0, 1));
+		RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+	}
+
+    {
+		glm::mat4 modelMatrix = glm::mat4(1);
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(-25, 0, 0));
+		modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(0, 0, 1));
+		RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+	}
+
+    {
+        lightPosition = glm::vec3(5.f, 1.f, -1.f);
+        glm::mat4 modelMatrix = glm::mat4(1);
+        
+        modelMatrix = glm::translate(modelMatrix, lightPosition);
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
+
+        RenderSimpleMesh(meshes["sphere"], shaders["LabShader"], modelMatrix);
+    }
 }
 
 
@@ -219,6 +284,12 @@ void MoveObjForward(glm::mat4& modelMatrix, glm::vec3& position, glm::vec3 forwa
 
 void Tema2::MoveTankForward(Tank& tank, glm::vec3 forward, float distance)
 {
+    if(tank.tank_rails.position.x + forward.x * distance < -24 || tank.tank_rails.position.x + forward.x * distance > 24)
+		return;
+
+    if (tank.tank_rails.position.z + forward.z * distance < -24 || tank.tank_rails.position.z + forward.z * distance > 24)
+        return;
+
 	MoveObjForward(tank.tank_rails.modelMatrix, tank.tank_rails.position, forward, distance);
 	MoveObjForward(tank.tank_body.modelMatrix, tank.tank_body.position, forward, distance);
 	MoveObjForward(tank.tank_turret.modelMatrix, tank.tank_turret.position, forward, distance);
@@ -377,6 +448,8 @@ void Tema2::GenerateRandomMove(Tank& tank, float deltaTimeSeconds)
 
 void Tema2::Update(float deltaTimeSeconds)
 {
+
+    // Render tank
     {
         RenderSimpleMesh(meshes["rails"], shaders["LabShader"], tank.tank_rails.modelMatrix, true, tank.damage);
         RenderSimpleMesh(meshes["body"], shaders["LabShader"], tank.tank_body.modelMatrix, true, tank.damage);
@@ -403,12 +476,6 @@ void Tema2::Update(float deltaTimeSeconds)
 		Tank& enemy = enemy_pair.second;
 		GenerateRandomMove(enemy, deltaTimeSeconds);
 	}
-
-    {
-        glm::mat4 modelMatrix = glm::mat4(1);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.1f, 0));
-		RenderSimpleMesh(meshes["plane"], shaders["LabShader"], modelMatrix);
-    }
 
     for (auto& pair : projectiles)
     {
@@ -541,7 +608,7 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 
     // Set shader uniforms for light & material properties
     // TODO(student): Set light position uniform
-    glm::vec3 lightPosition = tank.tank_body.position + glm::vec3(0.f, 1.f, 0.f);
+    // glm::vec3 lightPosition = tank.tank_body.position + glm::vec3(0.f, 1.f, 0.f);
     glUniform3fv(glGetUniformLocation(shader->program, "light_position"), 1, glm::value_ptr(lightPosition));
 
     glm::vec3 eyePosition = camera->position;
@@ -553,18 +620,33 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
     glUniform1f(glGetUniformLocation(shader->program, "material_kd"), materialKd);
     glUniform1f(glGetUniformLocation(shader->program, "material_ks"), materialKs);
 
-    // Set colorSphere to red
-    glm::vec3& colorSphere = glm::vec3(1, 0, 0); // red
-    // Set colorPlane to light grey
-    glm::vec3& colorPlane = glm::vec3(0.8, 0.8, 0.8); // light grey
-    glm::vec3& green = glm::vec3(0, 1, 0); // green
-
     if (isMyTank)
-        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(green));
+    {
+        if(mesh == meshes["rails"])
+            glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorTankRails));
+        else if (mesh == meshes["body"])
+            glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorTankBody));
+		else if (mesh == meshes["turret"])
+			glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorTankTurret));
+		else if (mesh == meshes["gun"])
+			glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorTankGun));
+    }
+    else if (mesh == meshes["rails"])
+		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorEnemyRails));
+	else if (mesh == meshes["body"])
+		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorEnemyBody));
+    else if (mesh == meshes["turret"])
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorEnemyTurret));
+    else if (mesh == meshes["gun"])
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorEnemyGun));
+	else if (mesh == meshes["projectile"])
+		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorProjectile));
     else if (mesh == meshes["plane"])
-        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorPlane));
-    else
-        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorSphere));
+		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorPlane));
+    else if (mesh == meshes["sky"])
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorSky));
+	else
+		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorBuilding));
 
     // Set damage uniform
      glUniform1i(glGetUniformLocation(shader->program, "damage"), damage);
@@ -642,9 +724,10 @@ void Tema2::OnKeyPress(int key, int mods)
     if (key == GLFW_KEY_C)
     {
         // Set camera posision behind tank
-        glm::vec3 position = tank.tank_rails.position - 3.f * tank.tank_rails.forward;
+        glm::vec3 position = tank.tank_rails.position - 3.f * normalize(tank.tank_rails.forward);
         position.y = 1.3f;
-        camera->Set(position, normalize(2.f * position + tank.tank_rails.forward), glm::vec3(0, 1, 0));
+
+        camera->Set(position, tank.tank_rails.position, glm::vec3(0, 1, 0));
 	}
 }
 

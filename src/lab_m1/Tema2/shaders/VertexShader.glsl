@@ -32,10 +32,6 @@ void main()
 		case 1:
 			switch(component)
 			{
-				case 2: // body
-					if(v_pos.x > 0.38)
-						v_pos = vec3(0.3, v_pos.y, v_pos.z);
-					break;
 				case 3: // turret
 					if(v_pos.y > 0.48 && v_pos.x < -0.13)
 						v_pos = vec3(v_pos.x, 0.43, v_pos.z);
@@ -49,10 +45,6 @@ void main()
 		case 2:
 			switch(component)
 			{
-				case 2: // body
-					if(v_pos.x > 0.38)
-						v_pos = vec3(0.1, v_pos.y, v_pos.z);
-					break;
 				case 3: // turret
 					if(v_pos.y > 0.43 && v_pos.x < 0.13)
 						v_pos = vec3(v_pos.x, 0.41, v_pos.z);
@@ -66,7 +58,7 @@ void main()
 	}
 
     vec3 world_position = vec3(Model * vec4(v_pos, 1.0));
-    vec3 world_normal = normalize(vec3(Model * vec4(v_normal, 0.0)));
+    vec3 world_normal = normalize(mat3(Model) * v_normal);
     vec3 L = normalize(light_position - world_position);
     vec3 V = normalize(eye_position - world_position);
 
@@ -80,11 +72,19 @@ void main()
 
     if (diffuse_light > 0)
     {
-        specular_light = material_ks * object_color.r * pow(max(dot(world_normal, normalize(L + V)), 0.0), material_shininess);
+        specular_light = material_ks * pow(max(dot(world_normal, normalize(L + V)), 0.0), material_shininess);
     }
 
-    // Compute light
-    float light = ambient_light + diffuse_light + specular_light;
+    float dist = length(light_position - world_position);
+	float Kc = 1.0;;
+	float Kl = 0.02;
+	float Kq = 0.001;
+    float att = 1.0 / (Kc + Kl * dist + Kq * dist * dist);
+
+	float emisive_light = 0.3f;
+
+	// Compute light
+    float light = emisive_light + ambient_light + att * (diffuse_light + specular_light);
 
     color = object_color * light;
     damage_out = damage;
