@@ -43,9 +43,9 @@ void Tema2::Init()
     }
 
     // Create a buildings meshes
-    for (int i = 0; i < 14; i++)
+    for (int i = 0; i < 21; i++)
     {
-        int id = i / 2 + 1;
+        int id = i / 3 + 1;
 
 		Mesh* mesh = new Mesh("building" + std::to_string(i));
 		mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "building" + std::to_string(id) + ".obj");
@@ -55,7 +55,7 @@ void Tema2::Init()
         float coordX = rand() % 81 - 40;
         float coordZ = rand() % 81 - 40;
 
-        while ((coordX > -4 && coordX < 4) || (coordZ > -4 && coordZ < 4))
+        while ((coordX > -7 && coordX < 7) || (coordZ > -7 && coordZ < 7))
         {
             coordX = rand() % 81 - 40;
             coordZ = rand() % 81 - 40;
@@ -142,7 +142,7 @@ void Tema2::Init()
         				GameObject(meshes["gun"], glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), modelMatrix));
 
     // Create enemies
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 20; i++)
     {
         // Generate random coordinates for the tank
         float coordX = rand() % 100 - 50;
@@ -152,30 +152,6 @@ void Tema2::Init()
         {
             coordX = rand() % 100 - 50;
             coordZ = rand() % 100 - 50;
-        }
-
-        // Check if the tank is in a building
-        bool inBuilding = false;
-
-        for (auto& building_pair : buildings)
-        {
-            if (abs(building_pair.second.position.x - coordX) < building_pair.second.dimOx / 2.f + 1.5f)
-            {
-				inBuilding = true;
-                break;
-			}
-
-            if (abs(building_pair.second.position.z - coordZ) < building_pair.second.dimOz / 2.f + 1.5f)
-            {
-                inBuilding = true;
-                break;
-            }
-		}
-
-        if (inBuilding)
-        {
-            i--;
-            continue;
         }
 
         // Create the tank
@@ -466,22 +442,22 @@ void Tema2::GenerateRandomMove(Tank& tank, float deltaTimeSeconds)
     {
         case 0:
         {
-   	    	   MoveTankForward(tank, tank.tank_rails.forward, deltaTimeSeconds * 1.0f);
+   	    	   MoveTankForward(tank, tank.tank_rails.forward, deltaTimeSeconds);
    	           break;
    	    }
    	    case 1:
         {
-   	    	   RotateTank(tank, deltaTimeSeconds * 1);
+   	    	   RotateTank(tank, deltaTimeSeconds * 0.5f);
    	    	   break;
    	    }
    	    case 2:
         {
-   	    	   MoveTankForward(tank, tank.tank_rails.forward, -deltaTimeSeconds * 1.0f);
+   	    	   MoveTankForward(tank, tank.tank_rails.forward, -deltaTimeSeconds);
    	    	   break;
    	    }
    	    case 3:
         {
-   	    	   RotateTank(tank, -deltaTimeSeconds * 1);
+   	    	   RotateTank(tank, -deltaTimeSeconds * 0.5f);
    	    	   break;
    	    }
    
