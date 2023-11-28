@@ -25,8 +25,8 @@ namespace m1
 			glm::vec3 position;
             glm::vec3 forward;
             glm::mat4 modelMatrix;
-            float timeCreated = 0;
-            std::string id = "";
+            float timeCreated = 0; // used for projectiles to store the time they were created
+            std::string id = ""; // used for projectiles to store the tank id that shot it
 		};
 
         struct Tank
@@ -74,23 +74,16 @@ namespace m1
 
         void Init() override;
 
-        Mesh* CreateMesh(const char* name, const std::vector<VertexFormat>& vertices, const std::vector<unsigned int>& indices);
-
     private:
         void FrameStart() override;
         void Update(float deltaTimeSeconds) override;
-        void FrameEnd() override;
 
         void RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelMatrix, bool isMyTank = false, int damage = 0);
 
         void OnInputUpdate(float deltaTime, int mods) override;
         void OnKeyPress(int key, int mods) override;
-        void OnKeyRelease(int key, int mods) override;
         void OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) override;
         void OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) override;
-        void OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) override;
-        void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
-        void OnWindowResize(int width, int height) override;
         void Tema2::CheckTanksCollision(Tank& tank1, Tank& tank2);
         void Tema2::MoveTankForward(Tank& tank, glm::vec3 forward, float distance);
         void Tema2::RotateTank(Tank& tank, float angle);
@@ -102,23 +95,24 @@ namespace m1
         void Tema2::GenerateRandomMove(Tank& tank, float deltaTimeSeconds);
         void Tema2::RepositionateCamera();
         void Tema2::RenderScene(float deltaTimeSeconds);
+        void Tema2::RenderObjects();
     protected:
-        implemented::MyCamera* camera;
-        bool renderCameraTarget;
 
+        // Camera
+        implemented::MyCamera* camera;
+
+        // buildings map
         std::unordered_map<std::string, Building> buildings;
 
+        // projectiles maps
         std::unordered_map<std::string, GameObject> projectiles;
-        std::unordered_map<std::string, GameObject> objectsToBeRemoved;
-        GameObject tank_rails, tank_body, tank_turret, tank_gun;
+        std::unordered_map<std::string, GameObject> projectilesToBeRemoved;
 
-        Tank tank = Tank(tank_rails, tank_body, tank_turret, tank_gun);
+        // tanks maps
+        Tank tank;
         std::unordered_map<std::string, Tank> enemies;
         std::unordered_map<std::string, Tank> enemiesToBeRemoved;
 
-        glm::vec3 tankPosition = glm::vec3(0, 0, 0);
-        bool up = false;
-        float tankAngle = 0;
         int score = 0;
 
         float old_angle_mouse = 0;
@@ -128,8 +122,7 @@ namespace m1
         int enemyID = 0;
         float lastEnemyShot = 0;
 
-        glm::mat4 modelMatrix;
-        glm::mat4 modelMatrixTank;
+        // Viewport variables
         glm::mat4 projectionMatrix;
         glm::mat4 viewMatrix;
         float FoV = RADIANS(60);
@@ -137,12 +130,16 @@ namespace m1
         float right = 10.0f;
         float bottom = -10.0f;
         float top = 10.0f;
-        ViewportArea miniViewportArea;
+
+        // Sets the resolution of the small viewport
+        glm::ivec2 resolution = window->GetResolution();
+        ViewportArea miniViewportArea = ViewportArea(50, 50, resolution.x / 5.f, resolution.y / 5.f);
 
         unsigned int materialShininess = 30;
         float materialKd = 0.5;
         float materialKs = 0.5;
 
+        // colors
         glm::vec3& olivine = glm::vec3(166 / 255.f, 211 / 255.f, 174 / 255.f); // olivine
         glm::vec3& asparagus = glm::vec3(103 / 255.f, 141 / 255.f, 88 / 255.f); // asparagus
         glm::vec3& celadon = glm::vec3(116 / 255.f, 211 / 255.f, 174 / 255.f); // celadon
@@ -170,6 +167,7 @@ namespace m1
         glm::vec3& colorBuilding = ghostWhite;
         glm::vec3& colorSky = lightBlue;
 
+        // lights
         glm::vec3 lightPosition = tank.tank_rails.position + glm::vec3(0.f, 1.f, 0.f);
         glm::vec3 lightPosition2 = glm::vec3(0, 9.7f, 0);
 
