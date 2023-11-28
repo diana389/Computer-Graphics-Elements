@@ -100,6 +100,8 @@ namespace m1
         void Tema2::DetectTank(Tank& enemy);
         void Tema2::Shoot(Tank& tank);
         void Tema2::GenerateRandomMove(Tank& tank, float deltaTimeSeconds);
+        void Tema2::RepositionateCamera();
+        void Tema2::RenderScene(float deltaTimeSeconds);
     protected:
         implemented::MyCamera* camera;
         bool renderCameraTarget;
@@ -117,6 +119,7 @@ namespace m1
         glm::vec3 tankPosition = glm::vec3(0, 0, 0);
         bool up = false;
         float tankAngle = 0;
+        int score = 0;
 
         float old_angle_mouse = 0;
         float angle_mouse = 0;
@@ -159,7 +162,7 @@ namespace m1
         glm::vec3& colorTankBody = darkGreen;
         glm::vec3& colorTankTurret = asparagus;
         glm::vec3& colorTankGun = roseQuartz;
-        glm::vec3& colorProjectile = bondiBlue;
+        glm::vec3& colorProjectile = black;
         glm::vec3& colorEnemyRails = roseQuartz;
         glm::vec3& colorEnemyBody = coralPink;
         glm::vec3& colorEnemyTurret = champagne;
@@ -168,6 +171,7 @@ namespace m1
         glm::vec3& colorSky = lightBlue;
 
         glm::vec3 lightPosition = tank.tank_rails.position + glm::vec3(0.f, 1.f, 0.f);
+        glm::vec3 lightPosition2 = glm::vec3(0, 9.7f, 0);
 
     };
 }   // namespace m1
