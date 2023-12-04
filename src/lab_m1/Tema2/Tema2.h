@@ -152,9 +152,10 @@ namespace m1
         glm::vec3& ghostWhite = glm::vec3(236 / 255.f, 235 / 255.f, 243 / 255.f); // ghost white
         glm::vec3& lightBlue = glm::vec3(150 / 255.f, 195 / 255.f, 206 / 255.f); // light blue
         glm::vec3& emerald = glm::vec3(105 / 255.f, 220 / 255.f, 158 / 255.f); // emerald
+        glm::vec3& kellyGreen = glm::vec3(98 / 255.f, 171 / 255.f, 55 / 255.f); // kelly green
 
 
-        glm::vec3& colorPlane = olivine;
+        glm::vec3& colorPlane = kellyGreen;
         glm::vec3& colorTankRails = roseQuartz;
         glm::vec3& colorTankBody = darkGreen;
         glm::vec3& colorTankTurret = asparagus;

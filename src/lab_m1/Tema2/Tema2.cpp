@@ -189,7 +189,7 @@ void Tema2::Init()
 void Tema2::FrameStart()
 {
     // Clears the color buffer (using the previously set color) and depth buffer
-    glClearColor(0, 0, 0, 1);
+    glClearColor(lightBlue.x, lightBlue.y, lightBlue.z, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::ivec2 resolution = window->GetResolution();
@@ -504,44 +504,44 @@ void Tema2::RenderObjects()
     }
 
     // Render sky
-    {
-        glm::mat4 modelMatrix = glm::mat4(1);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 10, 0));
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(100, 1, 100));
-        RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    }
+    //{
+    //    glm::mat4 modelMatrix = glm::mat4(1);
+    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 10, 0));
+    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(100, 1, 100));
+    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+    //}
 
-    {
-        glm::mat4 modelMatrix = glm::mat4(1);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 50));
-        modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(1, 0, 0));
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
-        RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    }
+    //{
+    //    glm::mat4 modelMatrix = glm::mat4(1);
+    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 50));
+    //    modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(1, 0, 0));
+    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
+    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+    //}
 
-    {
-        glm::mat4 modelMatrix = glm::mat4(1);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, -50));
-        modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(1, 0, 0));
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
-        RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    }
+    //{
+    //    glm::mat4 modelMatrix = glm::mat4(1);
+    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, -50));
+    //    modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(1, 0, 0));
+    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
+    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+    //}
 
-    {
-        glm::mat4 modelMatrix = glm::mat4(1);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(50, 0, 0));
-        modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(0, 0, 1));
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
-        RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    }
+    //{
+    //    glm::mat4 modelMatrix = glm::mat4(1);
+    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(50, 0, 0));
+    //    modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(0, 0, 1));
+    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
+    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+    //}
 
-    {
-        glm::mat4 modelMatrix = glm::mat4(1);
-        modelMatrix = glm::translate(modelMatrix, glm::vec3(-50, 0, 0));
-        modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(0, 0, 1));
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
-        RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    }
+    //{
+    //    glm::mat4 modelMatrix = glm::mat4(1);
+    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(-50, 0, 0));
+    //    modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(0, 0, 1));
+    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
+    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
+    //}
 
     // Render light sphere
     {
