@@ -22,19 +22,16 @@ uniform int isSpotlight;
 // Output
 layout(location = 0) out vec4 out_color;
 
-
-void main()
+vec3 point_light_contribution(vec3 light_position)
 {
     // TODO(student): Define ambient, diffuse and specular light components
     float ambient_light = 0.25 * material_kd;
 
     vec3 N = normalize(world_normal);
     vec3 L = normalize(light_position - world_position);
-    vec3 L2 = normalize(light_position2 - world_position);
     vec3 V = normalize(eye_position - world_position);
 
     float diffuse_light = material_kd * max(dot(N, L), 0.0);
-    float diffuse_light2 = material_kd * max(dot(N, L2), 0.0);
 
     float specular_light = 0;
     // It's important to distinguish between "reflection model" and
@@ -48,10 +45,7 @@ void main()
     }
 
     float dist = length(light_position - world_position);
-    float dist2 = length(light_position2 - world_position);
-
     float att = 1.0 / (dist * dist);
-    float att2 = 1.0 / (dist2 * dist2);
 
     // TODO(student): If (and only if) the light is a spotlight, we need to do
     // some additional things.
@@ -60,7 +54,6 @@ void main()
         float cut_off = radians(30);
 
         float spot_light = dot(-L, light_direction);
-        float spot_light2 = dot(-L2, light_direction);
 
         float spot_light_limit = cos(cut_off);
 
@@ -71,14 +64,6 @@ void main()
 		} else {
 			att = 0;
 		}
-
-        if(spot_light2 > spot_light_limit) {
-			// Quadratic attenuation
-            float linear_att = (spot_light2 - spot_light_limit) / (1.0f - spot_light_limit);
-            att2 = pow(linear_att, 2);
-		} else {
-			att2 = 0;
-		}
     }
 
     // TODO(student): Compute the total light. You can just add the components
@@ -87,10 +72,15 @@ void main()
     // you like, and multiply them with the respective light components.
 
     float light = ambient_light + att * (diffuse_light + specular_light);
-    float light2 = ambient_light + att2 * (diffuse_light2 + specular_light);
+    return light * object_color;
+}
 
+
+
+void main()
+{
     // TODO(student): Write pixel out color
-	vec3 colour = object_color * light + object_color * light2;
+	vec3 colour = point_light_contribution(light_position) + point_light_contribution(light_position2);
 	out_color = vec4(colour, 1.f);
 
 }
