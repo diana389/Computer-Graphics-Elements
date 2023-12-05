@@ -35,13 +35,6 @@ void Tema2::Init()
         meshes[mesh->GetMeshID()] = mesh;
     }
 
-    // Create a sky mesh
-    {
-        Mesh* mesh = new Mesh("sky");
-        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "primitives"), "plane50.obj");
-        meshes[mesh->GetMeshID()] = mesh;
-    }
-
     // Create a buildings meshes
     for (int i = 0; i < 21; i++)
     {
@@ -271,7 +264,8 @@ void Tema2::CheckTanksCollision(Tank &tank1, Tank &tank2)
         MoveTankForward(tank1, P, 0.5f);
         MoveTankForward(tank2, -P, 0.5f);
 
-        RepositionateCamera();
+        if (&tank1 == &this->tank || &tank2 == &this->tank)
+            RepositionateCamera();
 	}
 }
 
@@ -313,79 +307,13 @@ void Tema2::CheckTankBuildingCollision(Tank& tank, Building building)
 {
     glm::vec3 dif = tank.tank_rails.position - building.position;
 
-    if (abs(dif.x) < building.dimOx / 2.f + 0.7f && abs(dif.z) < building.dimOz / 2.f + 0.7f)
+    if (abs(dif.x) < (building.dimOx / 2.f + 0.7f) && abs(dif.z) < (building.dimOz / 2.f + 0.7f))
     {
-		//float p = building.dimOx / 2 - abs(dif.x);
-  //      glm::vec3 P = glm::normalize(glm::vec3(dif.x, 0, 0)) * p;
-
-  //      MoveTankForward(tank, P, 0.5f);
-  //      camera->MoveForward(-p * 0.5f);
-
-  //      p = building.dimOz / 2 - abs(dif.z);
-  //      P = glm::normalize(glm::vec3(0, 0, dif.z)) * p;
-
-  //      MoveTankForward(tank, P, 0.5f);
-  //      camera->MoveForward(-p * 0.5f);
-
-        /////////////////////////////////////////////////////////////////////////////////
-
-        //glm::vec3 P = ((building.dimOx / 2.f + 0.7f) * dif) / abs(dif.x) - dif;
-        //MoveTankForward(tank, P, 1);
-        //camera->MoveForward(-glm::length(P) * 1);
-
-        /*glm::vec3 corner1 = building.position + glm::vec3(building.dimOx / 2.f, 0, building.dimOz / 2.f);
-        glm::vec3 corner2 = building.position + glm::vec3(-building.dimOx / 2.f, 0, -building.dimOz / 2.f);
-        glm::vec3 corner3 = building.position + glm::vec3(building.dimOx / 2.f, 0, -building.dimOz / 2.f);
-        glm::vec3 corner4 = building.position + glm::vec3(-building.dimOx / 2.f, 0, building.dimOz / 2.f);
-
-        if (isAboveFirstDiagonal(corner1.x, corner1.z, corner2.x, corner2.z, tank.tank_rails.position.x, tank.tank_rails.position.z))
-        {
-            if (isBelowSecondDiagonal(corner3.x, corner3.z, corner4.x, corner4.z, tank.tank_rails.position.x, tank.tank_rails.position.z))
-            {
-                cout << "1" << endl;
-                float p = ((building.dimOx / 2.f) * glm::length(dif)) / abs(dif.x) - glm::length(dif);
-                glm::vec3 P = -glm::normalize(dif) * p;
-
-                MoveTankForward(tank, P, 1);
-
-                RepositionateCamera();
-
-                return;
-            }
-        }
-
-        if (isAboveFirstDiagonal(corner3.x, corner3.z, corner4.x, corner4.z, tank.tank_rails.position.x, tank.tank_rails.position.z))
-		{
-            if (isBelowSecondDiagonal(corner1.x, corner1.z, corner2.x, corner2.z, tank.tank_rails.position.x, tank.tank_rails.position.z))
-            {
-                cout << "2" << endl;
-
-                float p = ((building.dimOx / 2.f) * glm::length(dif)) / abs(dif.x) - glm::length(dif);
-                glm::vec3 P = -glm::normalize(dif) * p;
-
-                MoveTankForward(tank, P, 1);
-
-                RepositionateCamera();
-
-                return;
-            }
-        }
-
-        cout << "3" << endl;
-        float p = ((building.dimOz / 2.f) * glm::length(dif)) / abs(dif.z) - glm::length(dif);
-        glm::vec3 P = -glm::normalize(dif) * p;
-
-        MoveTankForward(tank, P, 1);
-
-        RepositionateCamera();*/
-
         glm::vec3 P = -glm::normalize(dif) * std::min(building.dimOx / 2.f - abs(dif.x), building.dimOz / 2.f - abs(dif.z));
         MoveTankForward(tank, P, 1);
 
-        //if(&tank == &this->tank)
-        //    camera->MoveForward(-glm::length(P) * 1);
-
-        RepositionateCamera();
+        if (&tank == &this->tank)
+            RepositionateCamera();
 	}
 }
 
@@ -502,46 +430,6 @@ void Tema2::RenderObjects()
         modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
         RenderSimpleMesh(meshes["plane"], shaders["LabShader"], modelMatrix);
     }
-
-    // Render sky
-    //{
-    //    glm::mat4 modelMatrix = glm::mat4(1);
-    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 10, 0));
-    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(100, 1, 100));
-    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    //}
-
-    //{
-    //    glm::mat4 modelMatrix = glm::mat4(1);
-    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 50));
-    //    modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(1, 0, 0));
-    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
-    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    //}
-
-    //{
-    //    glm::mat4 modelMatrix = glm::mat4(1);
-    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, -50));
-    //    modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(1, 0, 0));
-    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
-    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    //}
-
-    //{
-    //    glm::mat4 modelMatrix = glm::mat4(1);
-    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(50, 0, 0));
-    //    modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(0, 0, 1));
-    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
-    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    //}
-
-    //{
-    //    glm::mat4 modelMatrix = glm::mat4(1);
-    //    modelMatrix = glm::translate(modelMatrix, glm::vec3(-50, 0, 0));
-    //    modelMatrix = glm::rotate(modelMatrix, RADIANS(90.0f), glm::vec3(0, 0, 1));
-    //    modelMatrix = glm::scale(modelMatrix, glm::vec3(2, 1, 2));
-    //    RenderSimpleMesh(meshes["sky"], shaders["LabShader"], modelMatrix);
-    //}
 
     // Render light sphere
     {
@@ -779,8 +667,6 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorProjectile));
     else if (mesh == meshes["plane"])
 		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorPlane));
-    else if (mesh == meshes["sky"])
-        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorSky));
 	else
 		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorBuilding));
 

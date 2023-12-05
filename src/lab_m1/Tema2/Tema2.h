@@ -153,17 +153,26 @@ namespace m1
         glm::vec3& lightBlue = glm::vec3(150 / 255.f, 195 / 255.f, 206 / 255.f); // light blue
         glm::vec3& emerald = glm::vec3(105 / 255.f, 220 / 255.f, 158 / 255.f); // emerald
         glm::vec3& kellyGreen = glm::vec3(98 / 255.f, 171 / 255.f, 55 / 255.f); // kelly green
+        glm::vec3& darkPurple = glm::vec3(50 / 255.f, 33 / 255.f, 58 / 255.f); // dark purple
+        glm::vec3& spaceCadet = glm::vec3(56 / 255.f, 59 / 255.f, 83 / 255.f); // space cadet
+        glm::vec3& purplePizzazz = glm::vec3(255 / 255.f, 71 / 255.f, 218 / 255.f); // purple pizzazz
+        glm::vec3& redPantone = glm::vec3(239 / 255.f, 35 / 255.f, 60 / 255.f); // red pantone
+        glm::vec3& claret = glm::vec3(164 / 255.f, 19 / 255.f, 60 / 255.f); // claret
+        glm::vec3& brightPink = glm::vec3(255 / 255.f, 117 / 255.f, 143 / 255.f); // bright pink
+        glm::vec3& fandango = glm::vec3(180 / 255.f, 62 / 255.f, 143 / 255.f); // fandango
+        glm::vec3& violet = glm::vec3(234 / 255.f, 122 / 255.f, 244 / 255.f); // violet
+
 
 
         glm::vec3& colorPlane = kellyGreen;
         glm::vec3& colorTankRails = roseQuartz;
-        glm::vec3& colorTankBody = darkGreen;
-        glm::vec3& colorTankTurret = asparagus;
+        glm::vec3& colorTankBody = fandango;
+        glm::vec3& colorTankTurret = violet;
         glm::vec3& colorTankGun = roseQuartz;
         glm::vec3& colorProjectile = black;
         glm::vec3& colorEnemyRails = roseQuartz;
-        glm::vec3& colorEnemyBody = coralPink;
-        glm::vec3& colorEnemyTurret = champagne;
+        glm::vec3& colorEnemyBody = darkPurple;
+        glm::vec3& colorEnemyTurret = spaceCadet;
         glm::vec3& colorEnemyGun = roseQuartz;
         glm::vec3& colorBuilding = ghostWhite;
         glm::vec3& colorSky = lightBlue;
