@@ -323,7 +323,7 @@ void Tema2::DetectTank(Tank& enemy)
     float distance = glm::distance(tank.tank_rails.position, enemy.tank_rails.position);
 
     // Check if player's tank is in range
-    if (distance < 5)
+    if (distance < 10)
     {
         // Compute the new forward vector
         glm::vec3 new_forward = glm::normalize(tank.tank_body.position - enemy.tank_gun.position);

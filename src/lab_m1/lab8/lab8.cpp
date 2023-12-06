@@ -155,6 +155,9 @@ void Lab8::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & modelM
     int light_direction = glGetUniformLocation(shader->program, "light_direction");
     glUniform3f(light_direction, lightDirection.x, lightDirection.y, lightDirection.z);
 
+    int angle = glGetUniformLocation(shader->program, "cut_off_angle");
+    glUniform1f(angle, cutOff);
+
     // Set eye position (camera position) uniform
     glm::vec3 eyePosition = GetSceneCamera()->m_transform->GetWorldPosition();
     int eye_position = glGetUniformLocation(shader->program, "eye_position");
@@ -223,7 +226,15 @@ void Lab8::OnInputUpdate(float deltaTime, int mods)
         if (window->KeyHold(GLFW_KEY_Q)) lightPosition -= up * deltaTime * speed;
 
         // TODO(student): Set any other keys that you might need
+        if (window->KeyHold(GLFW_KEY_UP)) lightDirection -= forward * deltaTime * speed;
+        if (window->KeyHold(GLFW_KEY_LEFT)) lightDirection -= right * deltaTime * speed;
+        if (window->KeyHold(GLFW_KEY_DOWN)) lightDirection += forward * deltaTime * speed;
+        if (window->KeyHold(GLFW_KEY_RIGHT)) lightDirection += right * deltaTime * speed;
 
+        lightDirection = glm::normalize(lightDirection);
+
+        if (window->KeyHold(GLFW_KEY_1)) cutOff += deltaTime * RADIANS(50);
+        if(window->KeyHold(GLFW_KEY_2)) cutOff -= deltaTime * RADIANS(50);
     }
 }
 

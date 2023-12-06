@@ -38,6 +38,7 @@ namespace m1
 
         // TODO(student): If you need any other class variables, define them here.
         bool isSpotlight = false;
+        float cutOff = RADIANS(30);
 
         glm::vec3 lightPosition2 = glm::vec3(-1, 1, 1);
     };

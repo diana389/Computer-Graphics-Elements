@@ -8,6 +8,7 @@ in vec3 world_normal;
 uniform vec3 light_direction;
 uniform vec3 light_position;
 uniform vec3 light_position2;
+uniform float cut_off_angle;
 uniform vec3 eye_position;
 
 uniform float material_kd;
@@ -51,7 +52,7 @@ vec3 point_light_contribution(vec3 light_position)
     // some additional things.
 
     if(isSpotlight == 1) {
-        float cut_off = radians(30);
+        float cut_off = cut_off_angle;
 
         float spot_light = dot(-L, light_direction);
 
