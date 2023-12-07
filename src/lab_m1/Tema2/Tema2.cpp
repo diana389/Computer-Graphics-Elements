@@ -141,7 +141,7 @@ void Tema2::Init()
         float coordX = rand() % 100 - 50;
         float coordZ = rand() % 100 - 50;
 
-        while ((coordX > -5 && coordX < 5) || (coordZ > -5 && coordZ < 5))
+        while ((coordX > -7 && coordX < 5) || (coordZ > -7 && coordZ < 5))
         {
             coordX = rand() % 100 - 50;
             coordZ = rand() % 100 - 50;
@@ -175,6 +175,38 @@ void Tema2::Init()
     {
         Mesh* mesh = new Mesh("sphere");
         mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "primitives"), "sphere.obj");
+        meshes[mesh->GetMeshID()] = mesh;
+    }
+
+    // Create Christmas tree
+    {
+        Mesh* mesh = new Mesh("decorations");
+        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "Christmas_Tree_Environment.obj");
+        meshes[mesh->GetMeshID()] = mesh;
+    }
+
+    {
+        Mesh* mesh = new Mesh("branches");
+		mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "Christmas_Tree_Branches.obj");
+		meshes[mesh->GetMeshID()] = mesh;
+    }
+
+    {
+        Mesh* mesh = new Mesh("leaves");
+        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "Christmas_Tree_Leaves.obj");
+        meshes[mesh->GetMeshID()] = mesh;
+    }
+
+    // Create a gift mesh
+    {
+        Mesh* mesh = new Mesh("gift");
+		mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "gift.obj");
+		meshes[mesh->GetMeshID()] = mesh;
+    }
+
+    {
+        Mesh* mesh = new Mesh("box");
+        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "primitives"), "box.obj");
         meshes[mesh->GetMeshID()] = mesh;
     }
 }
@@ -445,6 +477,46 @@ void Tema2::RenderObjects()
     // Render projectiles
     for (auto& pair : projectiles)
         RenderSimpleMesh(pair.second.mesh, shaders["LabShader"], pair.second.modelMatrix);
+
+    // Render Christmas tree
+    {
+        glm::mat4 modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-3, -0.15f, -3));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f));
+
+        RenderSimpleMesh(meshes["decorations"], shaders["LabShader"], modelMatrix);
+        RenderSimpleMesh(meshes["branches"], shaders["LabShader"], modelMatrix);
+        RenderSimpleMesh(meshes["leaves"], shaders["LabShader"], modelMatrix);
+    }
+
+    // Render gifts
+    {
+        glm::mat4 modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-2.5, -0.15f, -3));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.4f));
+
+        RenderSimpleMesh(meshes["gift"], shaders["LabShader"], modelMatrix);
+
+        modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-2.5, -0.1f, -2.5));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.4f));
+        modelMatrix = glm::rotate(modelMatrix, RADIANS(30.0f), glm::vec3(1, 0, 0));
+
+        RenderSimpleMesh(meshes["gift"], shaders["LabShader"], modelMatrix);
+
+        modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-2.5, -0.01, -3));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.25f));
+
+        RenderSimpleMesh(meshes["box"], shaders["LabShader"], modelMatrix);
+
+        modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(-2.5, 0, -2.45));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.25f));
+        modelMatrix = glm::rotate(modelMatrix, RADIANS(30.0f), glm::vec3(1, 0, 0));
+
+        RenderSimpleMesh(meshes["box"], shaders["LabShader"], modelMatrix);
+    }
 }
 
 // Render objects and check conditions
@@ -667,6 +739,16 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorProjectile));
     else if (mesh == meshes["plane"])
 		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorPlane));
+	else if (mesh == meshes["decorations"])
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorDecorations));
+    else if (mesh == meshes["branches"])
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorBranches));
+	else if (mesh == meshes["leaves"])
+		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorLeaves));
+    else if (mesh == meshes["gift"])
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorGift));
+    else if (mesh == meshes["box"])
+        glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorGift));
 	else
 		glUniform3fv(glGetUniformLocation(shader->program, "object_color"), 1, glm::value_ptr(colorBuilding));
 

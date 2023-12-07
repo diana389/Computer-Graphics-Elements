@@ -161,6 +161,8 @@ namespace m1
         glm::vec3& brightPink = glm::vec3(255 / 255.f, 117 / 255.f, 143 / 255.f); // bright pink
         glm::vec3& fandango = glm::vec3(180 / 255.f, 62 / 255.f, 143 / 255.f); // fandango
         glm::vec3& violet = glm::vec3(234 / 255.f, 122 / 255.f, 244 / 255.f); // violet
+        glm::vec3& brown = glm::vec3(101 / 255.f, 67 / 255.f, 33 / 255.f); // brown
+        glm::vec3& gold = glm::vec3(255 / 255.f, 220 / 255.f, 52 / 255.f); // gold
 
 
 
@@ -176,6 +178,10 @@ namespace m1
         glm::vec3& colorEnemyGun = roseQuartz;
         glm::vec3& colorBuilding = ghostWhite;
         glm::vec3& colorSky = lightBlue;
+        glm::vec3& colorDecorations = gold;
+        glm::vec3& colorBranches = brown;
+        glm::vec3& colorLeaves = darkGreen;
+        glm::vec3& colorGift = brightPink;
 
         // lights
         glm::vec3 lightPosition = tank.tank_rails.position + glm::vec3(0.f, 1.f, 0.f);
