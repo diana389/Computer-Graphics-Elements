@@ -35,5 +35,6 @@ namespace m1
         void OnWindowResize(int width, int height) override;
 
         std::unordered_map<std::string, Texture2D *> mapTextures;
+        GLuint randomTextureID;
     };
 }   // namespace m1

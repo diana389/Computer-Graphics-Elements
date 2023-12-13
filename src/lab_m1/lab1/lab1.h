@@ -28,6 +28,10 @@ namespace m1
         void OnWindowResize(int width, int height) override;
 
         // TODO(student): Class variables go here
+        glm::string name = "box";
+        glm::vec3 position = glm::vec3(0, 0.5f, 0);
+        int x = 0;
 
+        glm::vec3 color = glm::vec3(0, 0, 0);
     };
 }   // namespace m1

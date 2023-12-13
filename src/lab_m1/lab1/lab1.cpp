@@ -38,10 +38,16 @@ void Lab1::Init()
     // TODO(student): Load some more meshes. The value of RESOURCE_PATH::MODELS
     // is actually a path on disk, go there and you will find more meshes.
     {
-        Mesh* mesh = new Mesh("tank");
-        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "tank"), "tank.obj");
+        Mesh* mesh = new Mesh("teapot");
+        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "primitives"), "teapot.obj");
         meshes[mesh->GetMeshID()] = mesh;
     }
+
+    {
+		Mesh* mesh = new Mesh("sphere");
+        mesh->LoadMesh(PATH_JOIN(window->props.selfDir, RESOURCE_PATH::MODELS, "primitives"), "sphere.obj");
+        meshes[mesh->GetMeshID()] = mesh;
+	}
 }
 
 
@@ -59,7 +65,7 @@ void Lab1::Update(float deltaTimeSeconds)
     // TODO(student): Generalize the arguments of `glClearColor`.
     // You can, for example, declare three variables in the class header,
     // that will store the color components (red, green, blue).
-    glClearColor(0, 0, 0, 1);
+    glClearColor(color.x, color.y, color.z, 1);
 
     // Clears the color buffer (using the previously set color) and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -77,7 +83,9 @@ void Lab1::Update(float deltaTimeSeconds)
     // was previously loaded. We do this using `RenderMesh`. Check the
     // signature of this function to see the meaning of its parameters.
     // You can draw the same mesh any number of times.
-    RenderMesh(meshes["tank"], glm::vec3(0, 0.5f, 0), glm::vec3(0.5f));
+
+    RenderMesh(meshes[name], position, glm::vec3(0.5f));
+
 }
 
 
@@ -100,7 +108,29 @@ void Lab1::OnInputUpdate(float deltaTime, int mods)
     // TODO(student): Add some key hold events that will let you move
     // a mesh instance on all three axes. You will also need to
     // generalize the position used by `RenderMesh`.
+    if (window->KeyHold(GLFW_KEY_W)) {
+        position.z -= 5 * deltaTime;
+    }
 
+    if (window->KeyHold(GLFW_KEY_A)) {
+		position.x -= 5 * deltaTime;
+	}
+
+    if (window->KeyHold(GLFW_KEY_S)) {
+		position.z += 5 * deltaTime;
+	}
+
+    if (window->KeyHold(GLFW_KEY_D)) {
+		position.x += 5 * deltaTime;
+	}
+
+	if (window->KeyHold(GLFW_KEY_Q)) {
+		position.y -= 5 * deltaTime;
+	}
+
+	if (window->KeyHold(GLFW_KEY_E)) {
+		position.y += 5 * deltaTime;
+	}
 }
 
 
@@ -109,13 +139,31 @@ void Lab1::OnKeyPress(int key, int mods)
     // Add key press event
     if (key == GLFW_KEY_F) {
         // TODO(student): Change the values of the color components.
-
+        if(color == glm::vec3(0, 0, 0))
+			color = glm::vec3(1, 1, 1);
+		else
+			color = glm::vec3(0, 0, 0);
     }
 
     // TODO(student): Add a key press event that will let you cycle
     // through at least two meshes, rendered at the same position.
     // You will also need to generalize the mesh name used by `RenderMesh`.
+    if(key == GLFW_KEY_SPACE) {
+        x = (x + 1) % 3;
 
+        switch(x)
+        {
+			case 0:
+				name = "box";
+				break;
+			case 1:
+				name = "teapot";
+				break;
+			case 2:
+				name = "sphere";
+				break;
+		}
+	}
 }
 
 
