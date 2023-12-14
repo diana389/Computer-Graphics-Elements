@@ -13,11 +13,9 @@ Tema2::Tema2()
 {
 }
 
-
 Tema2::~Tema2()
 {
 }
-
 
 void Tema2::Init()
 {
@@ -63,12 +61,12 @@ void Tema2::Init()
             }
             case 2:
             {
-                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 14.f, 10.f);
+                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 9.7f, 14.f);
                 break;
             }
             case 3:
             {
-                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 6.f, 7.f);
+                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 6.3f, 9.2f);
                 break;
             }
             case 4:
@@ -78,17 +76,17 @@ void Tema2::Init()
             }
             case 5:
             {
-                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 5.f, 5.f);
+                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 5.2f, 5.8f);
                 break;
             }
             case 6:
             {
-                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 12.f, 8.f);
+                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 12.4f, 7.4f);
                 break;
             }
             case 7:
             {
-                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 5.f, 5.f);
+                buildings["building" + std::to_string(i)] = Building(mesh, glm::vec3(coordX, 0, coordZ), 7.8f, 7.5f);
                 break;
             }
         }
@@ -297,7 +295,7 @@ void Tema2::CheckTanksCollision(Tank &tank1, Tank &tank2)
         MoveTankForward(tank2, -P, 0.5f);
 
         if (&tank1 == &this->tank || &tank2 == &this->tank)
-            RepositionateCamera();
+            SetCamera();
 	}
 }
 
@@ -314,39 +312,22 @@ bool Tema2::CheckTankProjectileCollision(Tank& tank, GameObject& projectile)
 	return false;
 }
 
-bool isAboveFirstDiagonal(double x1, double z1, double x2, double z2, double px, double py) {
-
-        // Determine the equation of the first diagonal
-        double m1 = (z2 - z1) / (x2 - x1);
-        double diagonal1 = z1 + m1 * (px - x1);
-
-        // Compare py with the computed y value for the first diagonal
-        return py > diagonal1;
-}
-
-bool isBelowSecondDiagonal(double x1, double z1, double x2, double z2, double px, double py) {
-
-        // Determine the equation of the second diagonal
-        double m2 = (z1 - z2) / (x2 - x1);
-        double diagonal2 = z1 + m2 * (px - x1);
-
-        // Compare py with the computed y value for the second diagonal
-        return py < diagonal2;
-}
-
 // Check tank's proximity to buildings and move it if necessary
 void Tema2::CheckTankBuildingCollision(Tank& tank, Building building)
 {
-    glm::vec3 dif = tank.tank_rails.position - building.position;
-
-    if (abs(dif.x) < (building.dimOx / 2.f + 0.7f) && abs(dif.z) < (building.dimOz / 2.f + 0.7f))
+    while(true)
     {
-        glm::vec3 P = -glm::normalize(dif) * std::min(building.dimOx / 2.f - abs(dif.x), building.dimOz / 2.f - abs(dif.z));
-        MoveTankForward(tank, P, 1);
+        glm::vec3 dif = tank.tank_rails.position - building.position;
 
-        if (&tank == &this->tank)
-            RepositionateCamera();
-	}
+        if (abs(dif.x) < (building.dimOx / 2.f + 0.7f) && abs(dif.z) < (building.dimOz / 2.f + 0.7f))
+        {
+            MoveTankForward(tank, tank.tank_rails.forward, -0.1f);
+
+            if (&tank == &this->tank)
+                SetCamera();
+        }
+        else return;
+    }
 }
 
 // Check player's tank proximity and shoot if possible
@@ -529,6 +510,9 @@ void Tema2::RenderScene(float deltaTimeSeconds)
     RotateObject(tank.tank_gun.modelMatrix, tank.tank_gun.position, tank.tank_gun.forward, angle_mouse - old_angle_mouse);
     old_angle_mouse = angle_mouse;
 
+    if(gameOver)
+		return;
+
     // Generate random moves for enemies
     for (auto& enemy_pair : enemies)
     {
@@ -661,7 +645,10 @@ void Tema2::RenderScene(float deltaTimeSeconds)
 
     // Check if game is over
     if (Engine::GetElapsedTime() > 120)
-        exit(0);
+    {
+        gameOver = true;
+        cout << "GAME OVER" << endl;
+    }
 }
 
 void Tema2::Update(float deltaTimeSeconds)
@@ -793,6 +780,9 @@ void Tema2::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
 // Move tank and camera positions
 void Tema2::OnInputUpdate(float deltaTime, int mods)
 {
+    if(gameOver)
+        return;
+
     // Move tank forward
     if (window->KeyHold(GLFW_KEY_W))
     {
@@ -825,7 +815,7 @@ void Tema2::OnInputUpdate(float deltaTime, int mods)
 }
 
 // Set camera posision behind tank
-void Tema2::RepositionateCamera()
+void Tema2::SetCamera()
 {
     // Set camera posision behind tank
     glm::vec3 position = tank.tank_rails.position - 3.f * normalize(tank.tank_rails.forward);
@@ -839,7 +829,7 @@ void Tema2::OnKeyPress(int key, int mods)
     if (key == GLFW_KEY_C)
     {
         // Set camera posision behind tank
-        RepositionateCamera();
+        SetCamera();
 	}
 }
 
@@ -891,6 +881,9 @@ void Tema2::Shoot(Tank& tank)
 }
 
 void Tema2::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) {
+    if(gameOver)
+		return;
+
     if (button == GLFW_MOUSE_BUTTON_2) // left click
     {
         Shoot(tank);

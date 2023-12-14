@@ -49,8 +49,8 @@ namespace m1
 			Building() : mesh(nullptr), position(glm::vec3(0)) {}
 			Building(Mesh* mesh, glm::vec3 position)
 				: mesh(mesh), position(position) {}
-			Building(Mesh* mesh, glm::vec3 position, float dimOz, float dimOx)
-				: mesh(mesh), position(position), dimOz(dimOz), dimOx(dimOx) {}
+			Building(Mesh* mesh, glm::vec3 position, float dimOx, float dimOz)
+				: mesh(mesh), position(position), dimOx(dimOx), dimOz(dimOz) {}
 
 			Mesh* mesh;
 			glm::vec3 position;
@@ -93,7 +93,7 @@ namespace m1
         void Tema2::DetectTank(Tank& enemy);
         void Tema2::Shoot(Tank& tank);
         void Tema2::GenerateRandomMove(Tank& tank, float deltaTimeSeconds);
-        void Tema2::RepositionateCamera();
+        void Tema2::SetCamera();
         void Tema2::RenderScene(float deltaTimeSeconds);
         void Tema2::RenderObjects();
     protected:
@@ -138,6 +138,8 @@ namespace m1
         unsigned int materialShininess = 30;
         float materialKd = 0.5;
         float materialKs = 0.5;
+
+        bool gameOver = false;
 
         // colors
         glm::vec3& olivine = glm::vec3(166 / 255.f, 211 / 255.f, 174 / 255.f); // olivine
